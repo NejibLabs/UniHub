@@ -72,7 +72,7 @@
           <span class="stat-copy"><small>PENDING TASKS</small><strong>{{ pending_count }}</strong><span>assigned to you or created by you</span></span>
           <i class="stat-arrow" data-lucide="arrow-up-right" aria-hidden="true"></i>
         </a>
-        <a class="dashboard-stat stat-resources" href="{% url 'search' %}">
+        <a class="dashboard-stat stat-resources" href="{% url 'dashboard' %}#ressources">
           <span class="stat-icon"><i data-lucide="folder-check" aria-hidden="true"></i></span>
           <span class="stat-copy"><small>VERIFIED RESOURCES</small><strong>{{ resource_count }}</strong><span>available through your subjects</span></span>
           <i class="stat-arrow" data-lucide="arrow-up-right" aria-hidden="true"></i>
@@ -147,7 +147,7 @@
           </div>
         </section>
 
-        <section class="dashboard-panel resources-panel" aria-labelledby="resources-heading">
+        <section class="dashboard-panel resources-panel" aria-labelledby="resources-heading" id="ressources">
           <div class="dashboard-panel-heading">
             <div><p class="panel-eyebrow">STUDY SMARTER</p><h2 id="resources-heading">Recent resources</h2></div>
             <a href="{% url 'search' %}">Explore <i data-lucide="arrow-right"></i></a>
