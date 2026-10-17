@@ -8,7 +8,7 @@ urlpatterns = [
  path("admin-dashboard/",views.admin_dashboard,name="admin_dashboard"),
  path("register/",views.register,name="register"), path("login/",views.login_view,name="login"),
  path("logout/",views.logout_view,name="logout"), path("student-form/",views.student_form,name="student_form"),
- path("student-hub/",views.dashboard,name="dashboard"), path("news/",views.news_feed,name="news_feed"), path("subjects/",views.subject_list,name="subject_list"),
+ path("student-hub/",views.dashboard,name="dashboard"), path("news/",views.news_feed,name="news_feed"),
  path("my-specialty/",views.specialty_subjects,name="specialty_subjects"),
  path("subject/<int:subject_id>/",views.subject_vault,name="subject_vault"),
  path("subject/<int:subject_id>/resources/add/",views.add_resource,name="add_resource"),

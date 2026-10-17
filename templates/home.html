@@ -17,7 +17,7 @@
         <h1>Learn smarter,<br>collaborate effortlessly<br>with <em>UniHub.</em></h1>
         <p class="hero-description">Your all-in-one academic platform to access courses, share resources, manage tasks and connect with your university community.</p>
         <div class="hero-actions">
-          <a class="btn btn-primary btn-lg" href="{% url 'subject_list' %}">Explore Subjects <i data-lucide="arrow-right"></i></a>
+          <a class="btn btn-primary btn-lg" href="{% url 'dashboard' %}">Go to my hub <i data-lucide="arrow-right"></i></a>
           <a class="btn btn-light btn-lg" href="{% url 'about' %}"><i data-lucide="circle-play"></i> Discover UniHub</a>
         </div>
         <div class="stats-panel">
@@ -71,7 +71,7 @@
             <small class="hub-nav-caption">STUDENT SPACE</small>
             <nav class="hub-nav" aria-label="Dashboard preview">
               <a class="is-active" href="{% url 'dashboard' %}"><i data-lucide="layout-dashboard"></i>Dashboard</a>
-              <a href="{% url 'subject_list' %}"><i data-lucide="book-open"></i>My Subjects</a>
+              <a href="{% url 'dashboard' %}"><i data-lucide="layout-dashboard"></i>Dashboard</a>
               <a href="{% url 'search' %}"><i data-lucide="folder-open"></i>Resources</a>
               <a href="{% url 'dashboard' %}#tasks"><i data-lucide="list-checks"></i>Tasks</a>
               <a href="{% url 'profile' %}"><i data-lucide="user-round"></i>Profile</a>
@@ -100,7 +100,7 @@
 
               <div class="hub-preview-panels">
                 <section class="hub-preview-panel hub-subject-panel">
-                  <div class="hub-panel-heading"><div><small>YOUR LEARNING</small><h4>My subjects</h4></div><a href="{% url 'subject_list' %}" aria-label="Browse subjects"><i data-lucide="arrow-up-right"></i></a></div>
+                  <div class="hub-panel-heading"><div><small>YOUR LEARNING</small><h4>My subjects</h4></div><a href="{% url 'dashboard' %}#subjects" aria-label="View my subjects"><i data-lucide="arrow-up-right"></i></a></div>
                   <div class="hub-subject-list">
                     {% for subject in subjects %}
                       <a class="hub-subject-row" href="{% url 'subject_vault' subject.id %}">

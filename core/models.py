@@ -143,6 +143,14 @@ class ContactMessage(models.Model):
         verbose_name_plural="contact messages"
     def __str__(self): return f"{self.get_category_display()} from {self.username}"
 
+class NewsComment(models.Model):
+    post=models.ForeignKey("NewsPost",on_delete=models.CASCADE,related_name="comments")
+    author=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="news_comments")
+    content=models.TextField(max_length=500)
+    created_at=models.DateTimeField(auto_now_add=True)
+    class Meta: ordering=["created_at"]
+    def __str__(self): return f"{self.author.username} on {self.post}"
+
 class NewsPost(models.Model):
     faculty=models.ForeignKey(Faculty,on_delete=models.CASCADE,related_name="news_posts")
     author=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="news_posts")
@@ -155,3 +163,15 @@ class NewsPost(models.Model):
     def display_image(self):
         return self.image.url if self.image else ""
     def __str__(self): return f"{self.author.username} · {self.faculty.name}"
+
+class NewsLike(models.Model):
+    post=models.ForeignKey(NewsPost,on_delete=models.CASCADE,related_name="likes")
+    user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="news_likes")
+    created_at=models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints=[
+            models.UniqueConstraint(fields=("post","user"),name="unique_news_like_per_user"),
+        ]
+
+    def __str__(self): return f"{self.user.username} likes {self.post}"

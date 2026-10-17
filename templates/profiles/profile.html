@@ -10,7 +10,7 @@
       <p class="profile-side-label">STUDENT SPACE</p>
       <nav class="profile-side-nav">
         <a class="active" href="{% url 'profile' %}" aria-current="page"><i data-lucide="user-round"></i><span>Profile</span></a>
-        <a href="{% url 'subject_list' %}"><i data-lucide="book-open"></i><span>My Subjects</span></a>
+        <a href="{% url 'dashboard' %}"><i data-lucide="layout-dashboard"></i><span>My Hub</span></a>
         <a href="{% url 'dashboard' %}#tasks"><i data-lucide="list-checks"></i><span>My Tasks</span></a>
         <a href="{% url 'search' %}"><i data-lucide="folder-open"></i><span>Resources</span></a>
       </nav>
@@ -127,7 +127,7 @@
     <section class="profile-summary-card">
       <div class="summary-card-heading"><span class="summary-icon"><i data-lucide="activity"></i></span><div><h2>Your activity</h2><p>Numbers from your UniHub account.</p></div></div>
       <div class="profile-stat-list">
-        <a href="{% url 'subject_list' %}"><span class="profile-stat-icon"><i data-lucide="book-open"></i></span><span><strong>{{ profile_subject_count }}</strong><small>Current subjects</small></span><i class="profile-stat-arrow" data-lucide="chevron-right"></i></a>
+        <a href="{% url 'dashboard' %}#subjects"><span class="profile-stat-icon"><i data-lucide="book-open"></i></span><span><strong>{{ profile_subject_count }}</strong><small>Current subjects</small></span><i class="profile-stat-arrow" data-lucide="chevron-right"></i></a>
         <a href="{% url 'dashboard' %}#tasks"><span class="profile-stat-icon"><i data-lucide="list-checks"></i></span><span><strong>{{ profile_task_count }}</strong><small>Your tasks</small></span><i class="profile-stat-arrow" data-lucide="chevron-right"></i></a>
         <a href="{% url 'search' %}"><span class="profile-stat-icon"><i data-lucide="files"></i></span><span><strong>{{ profile_resource_count }}</strong><small>Shared resources</small></span><i class="profile-stat-arrow" data-lucide="chevron-right"></i></a>
         <div><span class="profile-stat-icon"><i data-lucide="users-round"></i></span><span><strong>{{ profile_follower_count }}</strong><small>Followers</small></span></div>

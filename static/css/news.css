@@ -466,6 +466,161 @@
   background: #f7f7f9;
 }
 
+.news-body .post-comments {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #eef1f6;
+}
+
+.post-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.post-like-form {
+  margin: 0;
+}
+
+.like-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #62708a;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.like-toggle:hover,
+.like-toggle.is-liked {
+  color: #5845f5;
+}
+
+.like-toggle svg {
+  width: 15px;
+  height: 15px;
+}
+
+.like-count {
+  color: #7a8598;
+  font-weight: 600;
+}
+
+.comments-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #5845f5;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .02em;
+  cursor: pointer;
+}
+
+.comments-panel {
+  margin-top: 12px;
+  display: grid;
+  gap: 12px;
+}
+
+.comments-list {
+  display: grid;
+  gap: 10px;
+}
+
+.comment-item {
+  display: flex;
+  gap: 10px;
+  padding: 10px 0;
+  border-top: 1px solid #f1f2f7;
+}
+
+.comment-item:first-child {
+  border-top: 0;
+}
+
+.comment-avatar {
+  width: 32px;
+  height: 32px;
+  flex-basis: 32px;
+  font-size: 11px;
+}
+
+.comment-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.comment-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.comment-meta strong {
+  color: #172343;
+  font-size: 12px;
+}
+
+.comment-meta time {
+  color: #7a8598;
+  font-size: 10px;
+}
+
+.comment-body p {
+  margin: 0;
+  color: #45526b;
+  font-size: 12px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.comments-empty {
+  margin: 0;
+  color: #73819a;
+  font-size: 12px;
+}
+
+.comment-form {
+  display: grid;
+  gap: 8px;
+  padding-top: 8px;
+}
+
+.comment-form textarea {
+  width: 100%;
+  min-height: 72px;
+  padding: 10px 12px;
+  border: 1px solid #dde3ee;
+  border-radius: 10px;
+  background: #fff;
+  color: #172343;
+  font-size: 12px;
+  resize: vertical;
+}
+
+.comment-form button {
+  justify-self: flex-end;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 9px;
+  background: #5845f5;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 .news-about-card {
   padding: 19px !important;
 }

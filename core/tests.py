@@ -11,7 +11,7 @@ import struct
 import tempfile
 import zlib
 from .forms import RegisterForm,StudentProfileForm
-from .models import Faculty,Specialty,Subject,UserProfile,Resource,ToDo,NewsPost,semester_for_date,years_for_specialty
+from .models import Faculty,Specialty,Subject,UserProfile,Resource,ToDo,NewsPost,NewsLike,semester_for_date,years_for_specialty
 class UniHubTests(TestCase):
  def setUp(self):
     f=Faculty.objects.create(name="Engineering"); s=Specialty.objects.create(faculty=f,name="Ecological Informatics"); self.subject=Subject.objects.create(specialty=s,name="Hydrology",code="HYD101")
@@ -202,31 +202,6 @@ class UniHubTests(TestCase):
     self.assertEqual(response.context["pending_tasks"][0],pending_task)
     self.assertContains(response,"Your academic overview")
     self.assertContains(response,"Review hydrology notes")
- def test_subject_search(self): self.assertContains(self.client.get(reverse("subject_list"),{"q":"Hydro"}),"Hydrology")
- def test_subject_list_defaults_to_current_specialty_and_all_specialties_remains_available(self):
-    other_specialty=Specialty.objects.create(
-        faculty=self.subject.specialty.faculty,
-        name="Other Engineering Specialty",
-    )
-    other_subject=Subject.objects.create(
-        specialty=other_specialty,
-        name="Other specialty subject",
-    )
-    self.client.force_login(self.student)
-
-    default_response=self.client.get(reverse("subject_list"))
-    self.assertEqual(default_response.status_code,200)
-    self.assertContains(default_response,"Hydrology")
-    self.assertNotContains(default_response,other_subject.name)
-    self.assertEqual(
-        default_response.context["selected_specialty"],
-        str(self.student.profile.specialty_id),
-    )
-
-    all_specialties_response=self.client.get(reverse("subject_list"),{"specialty":""})
-    self.assertContains(all_specialties_response,"Hydrology")
-    self.assertContains(all_specialties_response,other_subject.name)
-    self.assertEqual(all_specialties_response.context["selected_specialty"],"")
  def test_search_page_has_its_own_campus_background_styles(self):
     response=self.client.get(reverse("search"))
     self.assertEqual(response.status_code,200)
@@ -305,6 +280,65 @@ class UniHubTests(TestCase):
     self.assertIn("link_url",invalid_response.context["form"].errors)
     self.assertNotContains(invalid_response,"Image URL (optional)")
     self.assertEqual(NewsPost.objects.count(),1)
+
+ def test_news_post_comments_can_be_added_and_displayed(self):
+    self.client.force_login(self.student)
+    post=NewsPost.objects.create(
+        faculty=self.subject.specialty.faculty,
+        author=self.prof,
+        content="Class update for today.",
+    )
+
+    response=self.client.post(reverse("news_feed"),{
+        "comment_submit":"1",
+        "post_id":post.pk,
+        "content":"Thanks for the update.",
+    },follow=True)
+
+    self.assertRedirects(response,f"{reverse('news_feed')}?faculty={self.subject.specialty.faculty_id}")
+    self.assertEqual(post.comments.count(),1)
+    self.assertContains(response,"Thanks for the update.")
+    self.assertContains(response,"1 comment")
+ def test_news_post_can_be_liked_and_unliked(self):
+    self.client.force_login(self.student)
+    post=NewsPost.objects.create(
+        faculty=self.subject.specialty.faculty,
+        author=self.prof,
+        content="Class update for today.",
+    )
+
+    liked_response=self.client.post(reverse("news_feed"),{
+        "like_submit":"1",
+        "post_id":post.pk,
+    })
+    self.assertRedirects(
+        liked_response,
+        f"{reverse('news_feed')}?faculty={post.faculty_id}",
+    )
+    self.assertEqual(NewsLike.objects.filter(post=post,user=self.student).count(),1)
+
+    feed_response=self.client.get(reverse("news_feed"))
+    displayed_post=feed_response.context["posts"].get(pk=post.pk)
+    self.assertEqual(displayed_post.like_count,1)
+    self.assertTrue(displayed_post.liked_by_user)
+    self.assertContains(feed_response,"Liked")
+    self.assertContains(feed_response,'aria-pressed="true"')
+
+    unliked_response=self.client.post(reverse("news_feed"),{
+        "like_submit":"1",
+        "post_id":post.pk,
+    })
+    self.assertRedirects(
+        unliked_response,
+        f"{reverse('news_feed')}?faculty={post.faculty_id}",
+    )
+    self.assertFalse(NewsLike.objects.filter(post=post,user=self.student).exists())
+
+    feed_response=self.client.get(reverse("news_feed"))
+    displayed_post=feed_response.context["posts"].get(pk=post.pk)
+    self.assertEqual(displayed_post.like_count,0)
+    self.assertFalse(displayed_post.liked_by_user)
+    self.assertContains(feed_response,"Like")
  def test_student_news_post_is_limited_to_their_faculty(self):
     other_faculty=Faculty.objects.create(name="Business")
     self.client.force_login(self.student)
@@ -384,10 +418,6 @@ class UniHubTests(TestCase):
         created_by=self.prof,
     )
 
-    self.assertContains(
-        self.client.get(reverse("subject_list")),
-        self.subject.name,
-    )
     response=self.client.get(reverse("subject_vault",args=[self.subject.pk]))
     self.assertEqual(response.status_code,200)
     self.assertContains(response,resource.title)

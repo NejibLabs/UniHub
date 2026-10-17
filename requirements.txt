@@ -2,4 +2,8 @@ asgiref==3.12.1
 Django==5.2.18
 pillow==12.3.0
 sqlparse==0.6.0
+<<<<<<< HEAD
 tzdata==2026.5
+=======
+tzdata==2026.5
+>>>>>>> c989800 (Added Button in ressources + removed subjects page + added comment and like section)

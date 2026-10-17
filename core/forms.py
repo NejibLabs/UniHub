@@ -2,7 +2,7 @@ import json
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
-from .models import UserProfile,Specialty,Resource,ToDo,NewsPost,Faculty,ContactMessage,years_for_specialty
+from .models import UserProfile,Specialty,Resource,ToDo,NewsPost,NewsComment,Faculty,ContactMessage,years_for_specialty
 User=get_user_model()
 
 
@@ -130,3 +130,13 @@ class NewsPostForm(forms.ModelForm):
         self.fields["content"].required = True
         self.fields["image"].required = False
         self.fields["link_url"].required = False
+
+class NewsCommentForm(forms.ModelForm):
+    class Meta:
+        model=NewsComment
+        fields=("content",)
+        widgets={"content":forms.Textarea(attrs={"rows":2,"placeholder":"Write a comment...","maxlength":500})}
+
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.fields["content"].required = True

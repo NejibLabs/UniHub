@@ -31,6 +31,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  document.querySelectorAll("[data-post-comments-toggle]").forEach((button) => {
+    const target = document.getElementById(button.dataset.target);
+    if (!target) return;
+
+    const syncState = (expanded) => {
+      button.setAttribute("aria-expanded", String(expanded));
+      button.setAttribute("data-expanded", String(expanded));
+      target.hidden = !expanded;
+      button.textContent = expanded ? button.dataset.openText : button.dataset.closedText;
+    };
+
+    syncState(false);
+  });
+
   document.querySelectorAll(".news-avatar img").forEach((image) => {
     image.addEventListener("error", () => image.remove(), { once: true });
   });

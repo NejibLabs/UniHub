@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count,Q
+from django.db.models import Count,Exists,OuterRef,Q
 from django.http import HttpResponseForbidden
 from django.shortcuts import render,redirect,get_object_or_404
 from django.db.models.functions import TruncMonth
@@ -10,8 +10,8 @@ from datetime import date,datetime,time
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils import timezone
 from django.views.decorators.http import require_POST
-from .models import Faculty,Specialty,Subject,UserProfile,Resource,ToDo,ActivityLog,NewsPost,ContactMessage,years_for_specialty
-from .forms import RegisterForm,StudentProfileForm,ProfileForm,ResourceForm,ToDoForm,NewsPostForm,ContactMessageForm
+from .models import Faculty,Specialty,Subject,UserProfile,Resource,ToDo,ActivityLog,NewsPost,NewsComment,NewsLike,ContactMessage,years_for_specialty
+from .forms import RegisterForm,StudentProfileForm,ProfileForm,ResourceForm,ToDoForm,NewsPostForm,NewsCommentForm,ContactMessageForm
 
 def profile_for(user):
     obj,created=UserProfile.objects.get_or_create(user=user)
@@ -257,6 +257,30 @@ def news_feed(request):
     selected_faculty=faculties.filter(pk=selected_faculty_id).first() if selected_faculty_id else None
 
     if request.method=="POST":
+        if request.POST.get("comment_submit") == "1":
+            post_id=request.POST.get("post_id")
+            comment_form=NewsCommentForm(request.POST)
+            if post_id:
+                post=get_object_or_404(NewsPost,pk=post_id)
+                if comment_form.is_valid():
+                    comment=comment_form.save(commit=False)
+                    comment.post=post
+                    comment.author=request.user
+                    comment.save()
+                    messages.success(request,"Your comment has been posted.")
+                    redirect_url=f"{request.path}?faculty={post.faculty_id}" if post.faculty_id else request.path
+                    return redirect(redirect_url)
+            messages.error(request,"Your comment could not be posted.")
+            return redirect(f"{request.path}?faculty={selected_faculty_id}" if selected_faculty_id else request.path)
+
+        if request.POST.get("like_submit") == "1":
+            post=get_object_or_404(NewsPost,pk=request.POST.get("post_id"))
+            like,created=NewsLike.objects.get_or_create(post=post,user=request.user)
+            if not created:
+                like.delete()
+            redirect_url=f"{request.path}?faculty={post.faculty_id}" if post.faculty_id else request.path
+            return redirect(redirect_url)
+
         form=NewsPostForm(request.POST,request.FILES)
         if is_student:
             form.fields["faculty"].queryset=Faculty.objects.filter(
@@ -279,7 +303,10 @@ def news_feed(request):
                 pk=profile.specialty.faculty_id,
             )
 
-    posts=NewsPost.objects.select_related("author__profile","faculty").order_by("-created_at")
+    posts=NewsPost.objects.select_related("author__profile","faculty").prefetch_related("comments__author__profile").annotate(
+        like_count=Count("likes",distinct=True),
+        liked_by_user=Exists(NewsLike.objects.filter(post_id=OuterRef("pk"),user=request.user)),
+    ).order_by("-created_at")
     if selected_faculty:
         posts=posts.filter(faculty=selected_faculty)
 
@@ -290,16 +317,6 @@ def news_feed(request):
         "form":form,
         "user_faculty":profile.specialty.faculty if profile.specialty else None,
     })
-
-@login_required
-def subject_list(request):
-    q=request.GET.get("q","").strip()
-    profile=profile_for(request.user)
-    spec=request.GET.get("specialty","") if "specialty" in request.GET else str(profile.specialty_id or "")
-    subjects=Subject.objects.select_related("specialty","specialty__faculty")
-    if q: subjects=subjects.filter(Q(name__icontains=q)|Q(code__icontains=q)|Q(description__icontains=q))
-    if spec.isdigit(): subjects=subjects.filter(specialty_id=int(spec))
-    return render(request,"academics/subject_list.html",{"subjects":subjects,"specialties":Specialty.objects.select_related("faculty"),"query":q,"selected_specialty":spec})
 
 def subject_vault(request,subject_id):
     subject=get_object_or_404(Subject.objects.select_related("specialty","specialty__faculty"),pk=subject_id)

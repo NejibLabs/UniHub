@@ -62,7 +62,7 @@
       </section>
 
       <section class="dashboard-stats" aria-label="Academic summary">
-        <a class="dashboard-stat stat-subjects" href="{% url 'subject_list' %}">
+        <a class="dashboard-stat stat-subjects" href="{% url 'dashboard' %}#subjects">
           <span class="stat-icon"><i data-lucide="book-open" aria-hidden="true"></i></span>
           <span class="stat-copy"><small>MY SUBJECTS</small><strong>{{ subjects.count }}</strong><span>for your current year</span></span>
           <i class="stat-arrow" data-lucide="arrow-up-right" aria-hidden="true"></i>
@@ -83,7 +83,7 @@
         <section class="dashboard-panel subjects-panel" aria-labelledby="subjects-heading" id="subjects">
           <div class="dashboard-panel-heading">
             <div><p class="panel-eyebrow">YOUR LEARNING PATH</p><h2 id="subjects-heading">My subjects</h2></div>
-            <a href="{% url 'subject_list' %}">View all <i data-lucide="arrow-right"></i></a>
+            <a href="{% url 'dashboard' %}#subjects">View all <i data-lucide="arrow-right"></i></a>
           </div>
           <div class="dashboard-subject-list">
             {% for subject in subjects %}
@@ -101,7 +101,7 @@
                 <span><i data-lucide="book-open" aria-hidden="true"></i></span>
                 <strong>No subjects for this term yet</strong>
                 <p>{% if profile.specialty %}Subjects for your specialty, year, and semester will appear here.{% else %}Complete your academic profile to see subjects for your program.{% endif %}</p>
-                {% if not profile.specialty %}<a href="{% url 'student_form' %}">Complete academic profile</a>{% else %}<a href="{% url 'subject_list' %}">Browse all subjects</a>{% endif %}
+                {% if not profile.specialty %}<a href="{% url 'student_form' %}">Complete academic profile</a>{% else %}<a href="{% url 'dashboard' %}#subjects">View your subjects</a>{% endif %}
               </div>
             {% endfor %}
           </div>
