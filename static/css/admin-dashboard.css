@@ -1,0 +1,51 @@
+.admin-dashboard-body{background:#f7f6ff url("../img/Sunlit Tunisian University Campus.png") center center/cover fixed no-repeat}
+.admin-dashboard-body .site-content{min-height:100vh;background:linear-gradient(115deg,#f7f8f4f0,#f7f8f4c2)}
+.admin-dashboard-page>.admin-resource-submissions{margin-bottom:28px}
+.admin-dashboard-page>.admin-contact-inbox{margin-top:0}
+.admin-dashboard-page .page-heading .description{margin-bottom:0}
+.admin-dashboard-page .app-stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+.admin-analytics{margin:26px 0}
+.admin-analytics>.panel-heading{margin-bottom:14px}
+.admin-analytics>.panel-heading h2{font-size:22px}
+.admin-analytics>.panel-heading .kicker{margin:0 0 4px;font-size:9px}
+.admin-chart-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:15px}
+.admin-chart-card{min-width:0;padding:20px;border-color:#e4e6ee;box-shadow:0 12px 30px #1f2c4d0c}
+.admin-chart-title{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.admin-chart-title h3{margin:0;color:#253450;font-size:15px;font-weight:800}
+.admin-chart-title p{margin:5px 0 0;color:#778197;font-size:10px;line-height:1.55}
+.admin-chart-period{padding:5px 8px;border-radius:999px;background:#f4f3fa;color:#6f6a91;font-size:9px;font-weight:700;white-space:nowrap}
+.admin-chart-legend{display:flex;flex-wrap:wrap;gap:13px;margin:12px 0 0 40px;color:#67728a;font-size:9px}
+.admin-chart-legend>span{display:flex;align-items:center;gap:6px}
+.admin-chart-legend i{display:block;width:14px;height:3px;border-radius:2px;background:var(--series-color)}
+.admin-chart-plot,.admin-bar-plot{width:100%;overflow-x:auto}
+.admin-line-chart{display:block;width:100%;min-width:440px;height:auto;overflow:visible}
+.admin-bar-chart{display:block;width:100%;min-width:460px;height:auto;overflow:visible}
+.admin-chart-gridline{stroke:#ececf2;stroke-width:1}
+.admin-chart-axis{stroke:#cfd2dc;stroke-width:1}
+.admin-chart-axis-value,.admin-chart-axis-label,.admin-chart-bar-value{fill:#798296;font-family:inherit;font-size:10px}
+.admin-chart-axis-label{font-size:9px}
+.admin-chart-bar-value{fill:#39445d;font-size:10px;font-weight:800}
+.admin-chart-line{fill:none;stroke:var(--series-color);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.admin-chart-point{fill:#fff;stroke:var(--series-color);stroke-width:3;vector-effect:non-scaling-stroke}
+.admin-chart-bar{fill:#7566d8;transition:fill .15s ease}
+.admin-chart-bar:hover{fill:#5141be}
+.admin-chart-bar-pending{fill:#e4a64d}
+.admin-chart-bar-pending:hover{fill:#c98425}
+.admin-dashboard-page .app-columns{margin-top:24px}
+@media(max-width:1050px){
+  .admin-chart-grid{grid-template-columns:minmax(0,1fr)}
+  .admin-chart-card{padding:20px}
+}
+@media(max-width:900px){
+  .admin-dashboard-page .app-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:600px){
+  .admin-dashboard-body{background-attachment:scroll}
+  .admin-dashboard-page .app-stats{grid-template-columns:minmax(0,1fr)}
+  .admin-chart-title{flex-direction:column}
+  .admin-chart-period{align-self:flex-start}
+  .admin-chart-card{padding:15px}
+}
+@media(prefers-reduced-motion:reduce){
+  .admin-chart-bar{transition:none}
+}

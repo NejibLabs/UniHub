@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Register — UniHub{% endblock %}
+{% block body_class %}auth-body{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/auth.css' %}">{% endblock %}
+{% block content %}
+<main class="auth-page auth-page-register">
+  <div class="auth-card auth-card-register">
+    <section class="auth-form-panel auth-register-form-panel" aria-labelledby="auth-heading">
+      <a class="auth-brand" href="{% url 'home' %}"><span class="auth-brand-mark" aria-label="UniHub logo"></span><span>UniHub</span></a>
+      <p class="auth-eyebrow">JOIN THE COMMUNITY</p>
+      <h1 id="auth-heading">Create your <em>UniHub</em> account.</h1>
+      <p class="auth-intro">Start organizing your academic life in one place.</p>
+      <form class="auth-form auth-register-form" method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="form-error auth-error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+        {% for field in form %}
+          <div class="auth-field">
+            <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}<span aria-hidden="true"> *</span>{% endif %}</label>
+            <div class="auth-input-wrap{% if field.name == 'password1' or field.name == 'password2' %} has-password-toggle{% endif %}">
+              {% if field.name == "username" %}<i data-lucide="user-round"></i>{% elif field.name == "email" %}<i data-lucide="mail"></i>{% elif field.name == "password1" or field.name == "password2" %}<i data-lucide="lock-keyhole"></i>{% else %}<i data-lucide="contact-round"></i>{% endif %}
+              {{ field }}
+              {% if field.name == "password1" or field.name == "password2" %}<button class="password-toggle" type="button" data-password-toggle="{{ field.id_for_label }}" aria-label="Show {{ field.label|lower }}" aria-pressed="false"><i data-lucide="eye"></i></button>{% endif %}
+            </div>
+            {% for error in field.errors %}<small class="field-error" role="alert">{{ error }}</small>{% endfor %}
+            {% if field.help_text %}<small class="auth-help">{{ field.help_text|safe }}</small>{% endif %}
+          </div>
+        {% endfor %}
+        <button class="btn btn-primary btn-lg auth-submit" type="submit">Create account <i data-lucide="arrow-right"></i></button>
+      </form>
+      <div class="auth-divider"><span>OR</span></div>
+      <p class="auth-switch">Already have an account? <a href="{% url 'login' %}">Login</a></p>
+    </section>
+
+    <aside class="auth-welcome-panel">
+      <img class="auth-welcome-image" src="{% static 'img/UniHub Student Platform Hero Mockup.png' %}" alt="UniHub student platform displayed on a laptop">
+      <p class="auth-eyebrow">YOUR ACADEMIC SPACE</p>
+      <h2>Make room for what <em>matters.</em></h2>
+      <p class="auth-welcome-copy">UniHub brings the useful parts of student life into one place, so you can focus on learning and moving forward.</p>
+      <div class="auth-benefits">
+        <article><span><i data-lucide="book-open"></i></span><div><h3>Your subjects, together</h3><p>See the courses that belong to your academic path.</p></div></article>
+        <article><span><i data-lucide="list-checks"></i></span><div><h3>A clearer plan</h3><p>Keep assignments and deadlines from slipping by.</p></div></article>
+        <article><span><i data-lucide="users-round"></i></span><div><h3>Learn as a community</h3><p>Share helpful knowledge with fellow students.</p></div></article>
+        <article><span><i data-lucide="folder-open"></i></span><div><h3>Useful study resources</h3><p>Discover materials shared for your subjects.</p></div></article>
+      </div>
+      <a class="btn auth-register-link" href="{% url 'login' %}">Already a member? Login <i data-lucide="arrow-up-right"></i></a>
+    </aside>
+  </div>
+</main>
+{% endblock %}

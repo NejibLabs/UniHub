@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ specialty.name }} subjects — UniHub{% endblock %}
+{% block body_class %}campus-body specialty-subjects-body{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/campus.css' %}">
+<link rel="stylesheet" href="{% static 'css/specialty-subjects.css' %}">
+{% endblock %}
+{% block content %}
+<main class="app-page container specialty-subjects-page">
+  <a class="specialty-back-link" href="{% url 'dashboard' %}"><i data-lucide="arrow-left" aria-hidden="true"></i>Back to dashboard</a>
+  <p class="kicker">YOUR LEARNING PATH</p>
+  <h1>{{ specialty.name }}</h1>
+  <p class="specialty-description">{{ specialty.faculty.name }} · {{ specialty.get_cycle_display }}. Browse subjects organized by academic year and semester.</p>
+
+  {% for year_group in subject_groups %}
+    <section class="specialty-year-section" aria-labelledby="year-{{ year_group.year }}">
+      <h2 id="year-{{ year_group.year }}">Year {{ year_group.year }}</h2>
+      <div class="specialty-semester-grid">
+        {% for semester_group in year_group.semesters %}
+          <section class="specialty-semester-card" aria-labelledby="year-{{ year_group.year }}-semester-{{ semester_group.number }}">
+            <h3 id="year-{{ year_group.year }}-semester-{{ semester_group.number }}">Semester {{ semester_group.number }}</h3>
+            <div class="specialty-table-wrap">
+              <table class="specialty-subject-table">
+                <thead>
+                  <tr><th scope="col">Subject</th><th scope="col">Code</th><th scope="col">Description</th></tr>
+                </thead>
+                <tbody>
+                  {% for subject in semester_group.subjects %}
+                    <tr>
+                      <td><a href="{% url 'subject_vault' subject.id %}">{{ subject.name }}</a></td>
+                      <td>{{ subject.code|default:"—" }}</td>
+                      <td>{{ subject.description|default:"—"|truncatechars:110 }}</td>
+                    </tr>
+                  {% empty %}
+                    <tr><td class="specialty-table-empty" colspan="3">No subjects added for this semester yet.</td></tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        {% endfor %}
+      </div>
+    </section>
+  {% endfor %}
+</main>
+{% endblock %}

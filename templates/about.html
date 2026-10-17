@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}About UniHub{% endblock %}
+{% block body_class %}about-body{% endblock %}
+{% block extra_css %}
+<style>
+  .about-body{background:linear-gradient(115deg,#fbfaffc9,#fbfaff80),url("{% static 'img/Dreamy Lavender University Campus.png' %}") center/cover fixed}
+  .about-body .footer{background:#ffffffa8;backdrop-filter:blur(14px)}
+  .about-page{padding-top:0}
+  .about-hero{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:center;gap:30px;min-height:100vh;min-height:100svh;padding:105px 0 35px;margin-bottom:20px}
+  .about-hero-copy{min-width:0}
+  .about-hero-copy .description{max-width:440px}
+  .about-hero-visual{display:grid;place-items:center;min-width:0;min-height:370px}
+  .about-hero-visual img{display:block;width:125%;max-width:none;height:auto;object-fit:contain;filter:drop-shadow(0 14px 22px #20134a30)}
+  .about-grid{margin-top:38px}
+  .about-purpose{display:grid;grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr);gap:35px;align-items:start;margin:62px 0 38px;padding:clamp(25px,5vw,48px);border:1px solid #e6e4f2;border-radius:22px;background:#ffffffdf;box-shadow:0 18px 48px #27315b12;backdrop-filter:blur(12px)}
+  .about-purpose h2{font-size:clamp(25px,3vw,36px)}
+  .about-purpose-copy{display:grid;gap:14px}
+  .about-purpose-copy p{margin:0;color:#64718a;font-size:13px;line-height:1.85}
+  .about-purpose-note{display:flex;gap:13px;align-items:flex-start;margin-top:3px;padding:16px;border:1px solid #e6e3fb;border-radius:14px;background:#f8f7ff}
+  .about-purpose-note>i{flex:0 0 21px;color:#5845f5}
+  .about-purpose-note p{color:#34415b;font-weight:600}
+  .about-details{margin:60px 0}
+  .about-section-heading{max-width:650px;margin-bottom:25px}
+  .about-section-heading h2{font-size:clamp(27px,3vw,38px)}
+  .about-section-heading>p:last-child{margin:11px 0 0;color:#64718a;font-size:13px;line-height:1.8}
+  .about-details-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  .about-detail-card{padding:23px;border:1px solid #e6e4f2;border-radius:17px;background:#ffffffeb;box-shadow:0 12px 32px #27315b0d;backdrop-filter:blur(10px)}
+  .about-detail-icon{display:grid;place-items:center;width:42px;height:42px;margin-bottom:16px;border-radius:13px;background:#f0eeff;color:#5845f5}
+  .about-detail-icon svg{width:20px;height:20px}
+  .about-detail-card h3{margin:0 0 8px;color:#172343;font-size:15px}
+  .about-detail-card p{margin:0;color:#71809a;font-size:11px;line-height:1.8}
+  .about-founder{display:grid;grid-template-columns:minmax(220px,.72fr) minmax(0,1.28fr);gap:clamp(25px,5vw,58px);align-items:center;margin:60px 0;padding:clamp(22px,4vw,42px);border:1px solid #e6e4f2;border-radius:22px;background:linear-gradient(130deg,#fffefeee,#f7f5ffeF);box-shadow:0 18px 48px #27315b12;backdrop-filter:blur(12px)}
+  .about-founder-portrait{position:relative;overflow:hidden;min-height:310px;border-radius:17px;background:#eeedf5}
+  .about-founder-portrait:after{position:absolute;inset:auto 0 0;height:32%;background:linear-gradient(transparent,#17172b30);content:""}
+  .about-founder-portrait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 27%}
+  .about-founder-copy{min-width:0}
+  .about-founder-copy .kicker{margin-bottom:9px}
+  .about-founder-copy h2{margin:0;color:#172343;font-size:clamp(25px,3vw,37px);line-height:1.15;letter-spacing:-.045em}
+  .about-founder-role{margin:10px 0 20px;color:#5845f5;font-size:11px;font-weight:700;line-height:1.7}
+  .about-founder-copy>p:not(.kicker):not(.about-founder-role){margin:0 0 13px;color:#64718a;font-size:12px;line-height:1.85}
+  .about-founder-signoff{display:flex;align-items:center;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid #e9e7f2;color:#34415b;font-size:10px;font-weight:700}
+  .about-founder-signoff svg{width:17px;height:17px;color:#5845f5}
+  .about-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;counter-reset:about-step}
+  .about-step{position:relative;padding:21px;border-top:2px solid #dcd8fb;background:#ffffffc9;counter-increment:about-step}
+  .about-step:before{display:block;margin-bottom:12px;color:#6959d8;font-size:11px;font-weight:800;letter-spacing:.12em;content:"0" counter(about-step)}
+  .about-step h3{margin:0 0 7px;color:#253450;font-size:13px}
+  .about-step p{margin:0;color:#71809a;font-size:10px;line-height:1.8}
+  @media(max-width:800px){.about-hero{grid-template-columns:1fr;gap:24px;padding-top:130px}.about-hero-visual{min-height:280px}.about-hero-visual img{width:min(112%,700px)}}
+  @media(max-width:700px){.about-purpose{grid-template-columns:1fr;gap:17px;margin:42px 0 26px}.about-founder{grid-template-columns:1fr;gap:22px;margin:42px 0;padding:20px}.about-founder-portrait{min-height:340px;max-height:440px}.about-details{margin:42px 0}.about-details-grid,.about-steps{grid-template-columns:1fr}}
+  @media(max-width:480px){.about-hero{padding-top:155px}.about-hero-visual{min-height:210px}.about-hero-visual img{width:120%}}
+</style>
+{% endblock %}
+{% block content %}
+<main class="app-page container about-page">
+  <section class="about-hero">
+    <div class="about-hero-copy">
+      <p class="kicker">A BETTER WAY TO STUDY</p>
+      <h1>Your academic life,<br><em>connected.</em></h1>
+      <p class="description">UniHub brings subjects, study resources, tasks, and your university community into one calm, organized space.</p>
+      <a class="btn btn-primary btn-lg" href="{% url 'subject_list' %}">Explore subjects</a>
+    </div>
+    <div class="about-hero-visual">
+      <img src="{% static 'img/UniHub Student Platform Hero Mockup_1.png' %}" alt="UniHub student platform displayed on a laptop with university study materials">
+    </div>
+  </section>
+  <section class="about-details" aria-labelledby="about-steps-heading">
+    <div class="about-section-heading">
+      <p class="kicker">GETTING STARTED</p>
+      <h2 id="about-steps-heading">Your academic space, step by step.</h2>
+    </div>
+    <div class="about-steps">
+      <article class="about-step">
+        <h3>Set up your profile</h3>
+        <p>Add your faculty, specialty, and current year so your dashboard can focus on your academic context.</p>
+      </article>
+      <article class="about-step">
+        <h3>Explore subjects</h3>
+        <p>Open subject spaces to find relevant materials, follow tasks, and see what is available for your courses.</p>
+      </article>
+      <article class="about-step">
+        <h3>Take part</h3>
+        <p>Stay informed through campus news and contribute useful resources to help make studying more collaborative.</p>
+      </article>
+    </div>
+  </section>
+  <section class="about-details" aria-labelledby="about-details-heading">
+    <div class="about-section-heading">
+      <p class="kicker">ONE SPACE, PRACTICAL TOOLS</p>
+      <h2 id="about-details-heading">Made to support the everyday student journey.</h2>
+      <p>University life involves more than attending class. UniHub brings together a few useful parts of that experience, so students can spend less time searching and more time studying.</p>
+    </div>
+    <div class="about-details-grid">
+      <article class="about-detail-card">
+        <span class="about-detail-icon"><i data-lucide="library" aria-hidden="true"></i></span>
+        <h3>A clearer view of your studies</h3>
+        <p>Find subjects organized by academic program and explore the dedicated resources and tasks attached to each subject.</p>
+      </article>
+      <article class="about-detail-card">
+        <span class="about-detail-icon"><i data-lucide="share-2" aria-hidden="true"></i></span>
+        <h3>Useful knowledge, shared</h3>
+        <p>Discover study materials contributed for your subjects. Resource verification labels help distinguish reviewed submissions.</p>
+      </article>
+      <article class="about-detail-card">
+        <span class="about-detail-icon"><i data-lucide="users-round" aria-hidden="true"></i></span>
+        <h3>A connected campus community</h3>
+        <p>Keep up with university news and participate in a shared academic space alongside fellow students and educators.</p>
+      </article>
+    </div>
+  </section>
+  <section class="about-purpose" aria-labelledby="about-purpose-heading">
+    <div>
+      <p class="kicker">BUILT FOR STUDENTS</p>
+      <h2 id="about-purpose-heading">A student-built space, focused on learning.</h2>
+    </div>
+    <div class="about-purpose-copy">
+      <div class="about-purpose-note">
+        <i data-lucide="heart-handshake" aria-hidden="true"></i>
+        <p>UniHub is an independent academic platform. It has no religious, political, or other unrelated purpose or affiliation; it exists to support learning and student collaboration.</p>
+      </div>
+      <p>The platform is intended for practical, respectful exchange around university life: sharing relevant resources, keeping up with coursework, and helping students stay connected to their studies.</p>
+    </div>
+  </section>
+  <section class="about-founder" aria-labelledby="about-founder-heading">
+    <div class="about-founder-portrait">
+      <img src="{% static 'img/mohamed_nejib_ben_hmida.png' %}" alt="Portrait of Mohamed Nejib Ben Hmida">
+    </div>
+    <div class="about-founder-copy">
+      <p class="kicker">A NOTE FROM THE FOUNDER</p>
+      <h2 id="about-founder-heading">Hi, I’m Mohamed Nejib Ben Hmida.</h2>
+      <p class="about-founder-role">Third-year Ecological Engineering student · Bachelor’s degree in Big Data and Data Analysis</p>
+      <p>Like many students, I’ve seen how hard it can be to find the right course materials, keep up with what’s happening, and get clear information from classmates and colleagues. Too often, communication feels scattered just when we need it most.</p>
+      <p>I created UniHub to make that experience a little easier: one shared place to find your subjects, exchange useful resources, follow academic updates, and stay connected with the people learning alongside you.</p>
+      <p>This platform grew from a simple belief: when students can share knowledge and communicate more easily, we all have a better chance to thrive. I hope UniHub helps make your university journey feel more organized, connected, and supported.</p>
+      <div class="about-founder-signoff"><i data-lucide="heart" aria-hidden="true"></i><span>Built with students, for the student journey.</span></div>
+    </div>
+  </section>
+</main>
+{% endblock %}

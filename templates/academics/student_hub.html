@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}My Hub — UniHub{% endblock %}
+{% block body_class %}campus-body student-hub-body{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/campus.css' %}">
+<link rel="stylesheet" href="{% static 'css/student-hub.css' %}">
+{% endblock %}
+{% block content %}
+<main class="student-hub-page">
+  <button class="dashboard-mobile-toggle" type="button" aria-controls="dashboardSidebar" aria-expanded="false">
+    <i data-lucide="menu" aria-hidden="true"></i><span>Dashboard menu</span>
+  </button>
+  <div class="dashboard-layout">
+    <aside class="dashboard-sidebar" id="dashboardSidebar" aria-label="Student navigation">
+      <a class="dashboard-brand" href="{% url 'dashboard' %}">
+        <img src="{% static 'img/Logo éducatif U white.png' %}" alt="">
+        <span>UniHub</span>
+      </a>
+      <p class="dashboard-nav-label">STUDENT SPACE</p>
+      <nav class="dashboard-nav">
+        <a class="is-active" href="{% url 'dashboard' %}" aria-current="page"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+        <a href="{% url 'dashboard' %}#subjects"><i data-lucide="book-open"></i><span>My Subjects</span></a>
+        <a href="{% url 'search' %}"><i data-lucide="folder-open"></i><span>Resources</span></a>
+        <a href="{% url 'dashboard' %}#tasks"><i data-lucide="list-checks"></i><span>Tasks</span></a>
+        <a href="{% url 'news_feed' %}"><i data-lucide="newspaper"></i><span>News</span></a>
+        <a href="{% url 'profile' %}"><i data-lucide="circle-user-round"></i><span>Profile</span></a>
+      </nav>
+      <div class="dashboard-sidebar-note">
+        <span><i data-lucide="graduation-cap" aria-hidden="true"></i></span>
+        <p>Your next step starts with what you learn today.</p>
+      </div>
+    </aside>
+
+    <div class="dashboard-content">
+      <header class="dashboard-page-heading">
+        <div>
+          <p class="dashboard-eyebrow">YOUR ACADEMIC OVERVIEW</p>
+          <h1>Welcome back, <span>{{ request.user.first_name|default:request.user.username }}</span></h1>
+          <p class="dashboard-heading-copy">A clear view of your classes, tasks, and study resources.</p>
+        </div>
+        <a class="dashboard-browse-link dashboard-news-link" href="{% url 'news_feed' %}"><i data-lucide="newspaper" aria-hidden="true"></i> News</a>
+      </header>
+
+      <section class="academic-identity" aria-labelledby="academic-identity-title">
+        <div class="identity-icon"><i data-lucide="building-2" aria-hidden="true"></i></div>
+        <div class="identity-main">
+          <p class="identity-label" id="academic-identity-title">FACULTY</p>
+          {% if profile.specialty %}
+            <h2>{{ profile.specialty.faculty.name }}</h2>
+            <a class="identity-specialty identity-specialty-link" href="{% url 'specialty_subjects' %}">{{ profile.specialty.name }} <i data-lucide="arrow-up-right" aria-hidden="true"></i></a>
+          {% else %}
+            <h2>University not set</h2>
+            <p class="identity-specialty">Add your faculty and specialty to see your academic subjects.</p>
+            <a class="identity-complete-link" href="{% url 'student_form' %}">Complete your academic profile <i data-lucide="arrow-right"></i></a>
+          {% endif %}
+        </div>
+        <div class="identity-chips" aria-label="Current academic year and semester">
+          <span class="identity-chip"><small>ACADEMIC YEAR</small><strong>Year {{ profile.current_year }}</strong></span>
+          <span class="identity-chip"><small>CURRENT TERM</small><strong>{{ profile.get_semester_display }}</strong></span>
+        </div>
+      </section>
+
+      <section class="dashboard-stats" aria-label="Academic summary">
+        <a class="dashboard-stat stat-subjects" href="{% url 'subject_list' %}">
+          <span class="stat-icon"><i data-lucide="book-open" aria-hidden="true"></i></span>
+          <span class="stat-copy"><small>MY SUBJECTS</small><strong>{{ subjects.count }}</strong><span>for your current year</span></span>
+          <i class="stat-arrow" data-lucide="arrow-up-right" aria-hidden="true"></i>
+        </a>
+        <a class="dashboard-stat stat-tasks" href="{% url 'dashboard' %}#tasks">
+          <span class="stat-icon"><i data-lucide="list-checks" aria-hidden="true"></i></span>
+          <span class="stat-copy"><small>PENDING TASKS</small><strong>{{ pending_count }}</strong><span>assigned to you or created by you</span></span>
+          <i class="stat-arrow" data-lucide="arrow-up-right" aria-hidden="true"></i>
+        </a>
+        <a class="dashboard-stat stat-resources" href="{% url 'search' %}">
+          <span class="stat-icon"><i data-lucide="folder-check" aria-hidden="true"></i></span>
+          <span class="stat-copy"><small>VERIFIED RESOURCES</small><strong>{{ resource_count }}</strong><span>available through your subjects</span></span>
+          <i class="stat-arrow" data-lucide="arrow-up-right" aria-hidden="true"></i>
+        </a>
+      </section>
+
+      <div class="dashboard-panels">
+        <section class="dashboard-panel subjects-panel" aria-labelledby="subjects-heading" id="subjects">
+          <div class="dashboard-panel-heading">
+            <div><p class="panel-eyebrow">YOUR LEARNING PATH</p><h2 id="subjects-heading">My subjects</h2></div>
+            <a href="{% url 'subject_list' %}">View all <i data-lucide="arrow-right"></i></a>
+          </div>
+          <div class="dashboard-subject-list">
+            {% for subject in subjects %}
+              <a class="dashboard-subject-row" href="{% url 'subject_vault' subject.id %}">
+                <span class="subject-mark"><i data-lucide="book-open" aria-hidden="true"></i></span>
+                <span class="subject-row-copy">
+                  <strong>{{ subject.name }}</strong>
+                  <small>{{ subject.specialty.name }} <span aria-hidden="true">·</span> {{ subject.specialty.faculty.name }}</small>
+                </span>
+                <span class="subject-semester">Semester {{ subject.semester }}</span>
+                <i class="subject-arrow" data-lucide="chevron-right" aria-hidden="true"></i>
+              </a>
+            {% empty %}
+              <div class="dashboard-empty">
+                <span><i data-lucide="book-open" aria-hidden="true"></i></span>
+                <strong>No subjects for this term yet</strong>
+                <p>{% if profile.specialty %}Subjects for your specialty, year, and semester will appear here.{% else %}Complete your academic profile to see subjects for your program.{% endif %}</p>
+                {% if not profile.specialty %}<a href="{% url 'student_form' %}">Complete academic profile</a>{% else %}<a href="{% url 'subject_list' %}">Browse all subjects</a>{% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section class="dashboard-panel tasks-panel" id="tasks" aria-labelledby="tasks-heading">
+          <div class="dashboard-panel-heading">
+            <div><p class="panel-eyebrow">KEEP MOVING FORWARD</p><h2 id="tasks-heading">Upcoming tasks</h2></div>
+            <span class="panel-count">{{ pending_count }} pending</span>
+          </div>
+          <div class="dashboard-task-list">
+            {% for task in tasks %}
+              <article class="dashboard-task-row{% if task.is_completed %} is-completed{% elif task.is_overdue %} is-overdue{% endif %}">
+                <form method="post" action="{% url 'toggle_task' task.id %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="next" value="{% url 'dashboard' %}#tasks">
+                  <button class="task-check" type="submit" aria-label="{% if task.is_completed %}Mark {{ task.title }} incomplete{% else %}Mark {{ task.title }} complete{% endif %}" aria-pressed="{{ task.is_completed|yesno:'true,false' }}">
+                    {% if task.is_completed %}<i data-lucide="check" aria-hidden="true"></i>{% endif %}
+                  </button>
+                </form>
+                <div class="task-row-copy">
+                  <strong>{{ task.title }}</strong>
+                  <span>{{ task.subject.name }}</span>
+                  <small>{% if task.due_date %}Due {{ task.due_date|date:"M j, Y" }}{% else %}No due date{% endif %}</small>
+                </div>
+                {% if task.is_completed %}
+                  <span class="task-status status-done">Done</span>
+                {% elif task.is_overdue %}
+                  <span class="task-status status-overdue">Overdue</span>
+                {% elif not task.due_date %}
+                  <span class="task-status status-upcoming">To do</span>
+                {% else %}
+                  <span class="task-status status-upcoming">Upcoming</span>
+                {% endif %}
+              </article>
+            {% empty %}
+              <div class="dashboard-empty task-empty">
+                <span><i data-lucide="check-check" aria-hidden="true"></i></span>
+                <strong>You're all caught up</strong>
+                <p>Tasks assigned to you or created by you will appear here.</p>
+              </div>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section class="dashboard-panel resources-panel" aria-labelledby="resources-heading">
+          <div class="dashboard-panel-heading">
+            <div><p class="panel-eyebrow">STUDY SMARTER</p><h2 id="resources-heading">Recent resources</h2></div>
+            <a href="{% url 'search' %}">Explore <i data-lucide="arrow-right"></i></a>
+          </div>
+          <div class="dashboard-resource-list">
+            {% for resource in resources %}
+              <a class="dashboard-resource-row" href="{% url 'subject_vault' resource.subject_id %}">
+                <span class="resource-mark"><i data-lucide="file-text" aria-hidden="true"></i></span>
+                <span class="resource-row-copy">
+                  <strong>{{ resource.title }}</strong>
+                  <small>{{ resource.subject.name }} <span aria-hidden="true">·</span> {{ resource.created_at|date:"M j, Y" }}</small>
+                </span>
+                {% if resource.is_verified %}<span class="resource-status is-verified">Verified</span>{% else %}<span class="resource-status is-review">In review</span>{% endif %}
+                <i class="resource-arrow" data-lucide="arrow-up-right" aria-hidden="true"></i>
+              </a>
+            {% empty %}
+              <div class="dashboard-empty resource-empty">
+                <span><i data-lucide="folder-open" aria-hidden="true"></i></span>
+                <strong>No resources yet</strong>
+                <p>Study resources for your current subjects will appear here.</p>
+                <a href="{% url 'search' %}">Explore resources</a>
+              </div>
+            {% endfor %}
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+<script>
+(() => {
+  const toggle = document.querySelector(".dashboard-mobile-toggle");
+  const sidebar = document.getElementById("dashboardSidebar");
+  if (!toggle || !sidebar) return;
+  const closeMenu = () => {
+    sidebar.classList.remove("is-open");
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.querySelector("span").textContent = "Dashboard menu";
+  };
+  toggle.addEventListener("click", () => {
+    const open = sidebar.classList.toggle("is-open");
+    toggle.setAttribute("aria-expanded", String(open));
+    toggle.querySelector("span").textContent = open ? "Close menu" : "Dashboard menu";
+  });
+  sidebar.querySelectorAll("a").forEach(link => link.addEventListener("click", closeMenu));
+})();
+</script>
+{% endblock %}

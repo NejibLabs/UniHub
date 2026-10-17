@@ -1,0 +1,41 @@
+.contact-body{background:#f7f6ff url("../img/Dreamy Pastel Campus Haze a.png") center center/cover fixed no-repeat}
+.contact-body .site-content{min-height:100vh;background:linear-gradient(115deg,#f8f8fff0,#f8f8ffb8)}
+.contact-page{padding-top:126px}
+.contact-heading{max-width:620px;margin-bottom:25px}
+.contact-heading .kicker{margin-bottom:7px}
+.contact-heading h1{margin:0;color:#172343;font-size:clamp(34px,4vw,48px);line-height:1.12}
+.contact-heading .description{margin:12px 0 0;font-size:12px}
+.contact-layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(260px,.75fr);align-items:stretch;gap:20px}
+.contact-form-card,.contact-side-card{min-width:0;height:100%;box-sizing:border-box;padding:25px;border:1px solid #e6e7f0;border-radius:18px;background:#fff;box-shadow:0 12px 32px #1723430a}
+.contact-card-heading{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.contact-icon,.contact-side-icon{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;border-radius:13px;background:#f0eeff;color:#5845f5}
+.contact-icon svg,.contact-side-icon svg{width:20px;height:20px}
+.contact-card-heading h2{margin:0;color:#172343;font-size:18px}
+.contact-card-heading p{margin:5px 0 0;color:#8290a7;font-size:10px}
+.contact-form{display:grid;gap:15px}
+.contact-account{padding:15px;border:1px solid #ebe9f8;border-radius:12px;background:#faf9ff}
+.contact-section-label{margin:0 0 12px;color:#695bd3;font-size:8px;font-weight:800;letter-spacing:.14em}
+.contact-account-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px 14px}
+.contact-account-grid>div{display:grid;gap:4px;min-width:0}
+.contact-account-grid small{color:#8690a5;font-size:8px}
+.contact-account-grid strong{color:#2b3852;font-size:10px;overflow-wrap:anywhere}
+.contact-account-note{display:flex;align-items:center;gap:6px;margin:12px 0 0;color:#8490a4;font-size:8px;line-height:1.5}
+.contact-account-note svg{flex:0 0 13px;width:13px;height:13px;color:#766bd1}
+.contact-field{display:grid;gap:7px;min-width:0}
+.contact-field>label{color:#34425c;font-size:10px;font-weight:700}
+.contact-field select,.contact-field textarea{width:100%;min-width:0;padding:11px 12px;border:1px solid #dfe3ed;border-radius:10px;background:#fff;color:#202a43;font-size:11px;outline-color:#5845f5}
+.contact-field textarea{min-height:145px;resize:vertical;line-height:1.6}
+.contact-submit{justify-self:start;min-height:43px;font-size:10px}
+.contact-submit svg{width:15px;height:15px}
+.contact-side-card{display:flex;flex-direction:column;padding:27px;background:linear-gradient(145deg,#f7f5ff,#fff 80%)}
+.contact-side-image{display:block;width:min(100%,190px);height:170px;align-self:center;margin:-5px auto 12px;object-fit:contain}
+.contact-side-icon{margin-bottom:18px}
+.contact-side-card .kicker{margin-bottom:7px;font-size:8px}
+.contact-side-card h2{margin:0;color:#172343;font-size:23px;line-height:1.25;letter-spacing:-.04em}
+.contact-side-card>p:not(.kicker){margin:11px 0 19px;color:#71809a;font-size:10px;line-height:1.8}
+.contact-side-card ul{display:grid;gap:12px;margin:0;padding:0;list-style:none}
+.contact-side-card li{display:flex;align-items:center;gap:9px;color:#394760;font-size:9px;font-weight:600}
+.contact-side-card li svg{width:15px;height:15px;color:#6556d8}
+@media(max-width:800px){.contact-layout{grid-template-columns:minmax(0,1fr)}.contact-form-card,.contact-side-card{height:auto}.contact-side-card{order:-1}.contact-side-image{height:150px}}
+@media(max-width:700px){.contact-body{background-attachment:scroll}}
+@media(max-width:600px){.contact-page{padding:112px 16px 42px}.contact-form-card,.contact-side-card{padding:19px}.contact-account-grid{grid-template-columns:minmax(0,1fr)}.contact-submit{width:100%}}

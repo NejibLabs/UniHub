@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Admin dashboard — UniHub{% endblock %}
+{% block body_class %}admin-dashboard-body{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/admin-dashboard.css' %}">{% endblock %}
+{% block content %}
+<main class="app-page container admin-dashboard-page">
+  <div class="page-heading">
+    <div>
+      <p class="kicker">ADMINISTRATION</p>
+      <h1>UniHub <em>overview.</em></h1>
+      <p class="description">Explore live university, community, resource, and task statistics.</p>
+    </div>
+    <a class="btn btn-outline btn-lg" href="{% url 'admin:index' %}">Django admin</a>
+  </div>
+  <div class="app-stats">
+    <article><small>Users</small><b>{{ user_count }}</b></article>
+    <article><small>Faculties</small><b>{{ faculty_count }}</b></article>
+    <article><small>Specialties</small><b>{{ specialty_count }}</b></article>
+    <article><small>Subjects</small><b>{{ subject_count }}</b></article>
+    <article><small>Resources</small><b>{{ resource_count }}</b></article>
+    <article><small>Awaiting review</small><b>{{ pending_resource_count }}</b></article>
+  </div>
+  <section class="admin-analytics">
+    <div class="panel-heading"><div><p class="kicker">LIVE DATA</p><h2>University charts</h2></div></div>
+    <div class="admin-chart-grid">
+      <section class="panel admin-chart-card admin-line-chart-card">
+        <div class="admin-chart-title"><div><h3>Platform activity</h3><p>New accounts and submitted resources by month</p></div><span class="admin-chart-period">Last 6 months</span></div>
+        <div class="admin-chart-legend">
+          {% for series in line_series %}<span><i style="--series-color:{{ series.color }}"></i>{{ series.label }}</span>{% endfor %}
+        </div>
+        <div class="admin-chart-plot">
+          <svg class="admin-line-chart" viewBox="0 0 620 235" role="img" aria-labelledby="adminLineChartTitle adminLineChartDesc">
+            <title id="adminLineChartTitle">Monthly platform activity</title>
+            <desc id="adminLineChartDesc">Monthly counts of newly joined users and submitted resources over the last six months.</desc>
+            {% for tick in line_ticks %}
+              <line class="admin-chart-gridline" x1="48" y1="{{ tick.y }}" x2="610" y2="{{ tick.y }}"></line>
+              <text class="admin-chart-axis-value" x="38" y="{{ tick.y|add:'4' }}" text-anchor="end">{{ tick.value }}</text>
+            {% endfor %}
+            <line class="admin-chart-axis" x1="48" y1="190" x2="610" y2="190"></line>
+            {% for series in line_series %}
+              <polyline class="admin-chart-line" points="{{ series.polyline }}" style="--series-color:{{ series.color }}"></polyline>
+              {% for point in series.points %}
+                <circle class="admin-chart-point" cx="{{ point.x }}" cy="{{ point.y }}" r="4" style="--series-color:{{ series.color }}">
+                  <title>{{ series.label }} · {{ point.month|date:"F Y" }}: {{ point.value }}</title>
+                </circle>
+              {% endfor %}
+            {% endfor %}
+            {% for month in chart_months %}
+              <text class="admin-chart-axis-label" x="{% cycle '50' '162' '274' '386' '498' '610' %}" y="215" text-anchor="middle">{{ month|date:"M" }}</text>
+            {% endfor %}
+          </svg>
+        </div>
+      </section>
+      <section class="panel admin-chart-card admin-bar-chart-card">
+        <div class="admin-chart-title"><div><h3>Platform totals</h3><p>Current records across UniHub</p></div></div>
+        <div class="admin-bar-plot">
+          <svg class="admin-bar-chart" viewBox="0 0 640 225" role="img" aria-labelledby="adminBarChartTitle adminBarChartDesc">
+            <title id="adminBarChartTitle">Current platform totals</title>
+            <desc id="adminBarChartDesc">Bar chart comparing current users, academic records, verified resources, and resources awaiting review.</desc>
+            <line class="admin-chart-gridline" x1="42" y1="40" x2="625" y2="40"></line>
+            <line class="admin-chart-gridline" x1="42" y1="88" x2="625" y2="88"></line>
+            <line class="admin-chart-gridline" x1="42" y1="136" x2="625" y2="136"></line>
+            <line class="admin-chart-gridline" x1="42" y1="185" x2="625" y2="185"></line>
+            <line class="admin-chart-axis" x1="42" y1="185" x2="625" y2="185"></line>
+            {% for metric in bar_metrics %}
+              <rect class="admin-chart-bar{% if metric.label == 'Awaiting review' %} admin-chart-bar-pending{% endif %}" x="{{ metric.x }}" y="{{ metric.y }}" width="48" height="{{ metric.height }}" rx="5">
+                <title>{{ metric.label }}: {{ metric.value }}</title>
+              </rect>
+              <text class="admin-chart-bar-value" x="{{ metric.x|add:'24' }}" y="{{ metric.y|add:'-7' }}" text-anchor="middle">{{ metric.value }}</text>
+              <text class="admin-chart-axis-label" x="{{ metric.x|add:'24' }}" y="204" text-anchor="middle">{{ metric.short_label }}</text>
+            {% endfor %}
+          </svg>
+        </div>
+      </section>
+    </div>
+  </section>
+  <section class="panel admin-resource-submissions">
+    <div class="panel-heading"><h2>Latest resource submissions</h2></div>
+    {% for resource in latest_resources %}
+      <div class="list-row">
+        <span>
+          <b>{{ resource.title }}</b>
+          <small>{{ resource.get_category_display }} · {{ resource.subject.name }} · {{ resource.subject.specialty.name }} · {{ resource.submitted_by.username }} · {{ resource.created_at }}</small>
+        </span>
+        {% if resource.is_verified %}
+          <span class="pill good">Verified</span>
+        {% else %}
+          <span class="pill">Pending</span>
+          <form method="post" action="{% url 'verify_resource' resource.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{% url 'admin_dashboard' %}">
+            <button class="btn btn-primary btn-sm">Verify</button>
+          </form>
+        {% endif %}
+        <a href="{{ resource.url }}" target="_blank" rel="noopener noreferrer">Open ↗</a>
+      </div>
+    {% empty %}
+      <p class="empty">No resource submissions yet.</p>
+    {% endfor %}
+  </section>
+  <section class="panel admin-contact-inbox">
+    <div class="panel-heading">
+      <div><p class="kicker">CONTACT INBOX</p><h2>All messages</h2></div>
+      <a class="btn btn-outline btn-sm" href="{% url 'admin:core_contactmessage_changelist' %}">Manage in Django admin</a>
+    </div>
+    {% for message in contact_messages %}
+      <article class="list-row">
+        <span>
+          <b>{{ message.get_category_display }} · {{ message.contact_name|default:message.username }}</b>
+          <small>{{ message.email|default:"No email provided" }} · {{ message.created_at }}</small>
+          <span>{{ message.message|linebreaksbr }}</span>
+        </span>
+      </article>
+    {% empty %}
+      <p class="empty">No contact messages have been received.</p>
+    {% endfor %}
+  </section>
+  <div class="app-columns">
+    <section class="panel">
+      <div class="panel-heading"><h2>Recent activity</h2></div>
+      {% for activity in recent_activity %}
+        <div class="list-row">
+          <span><b>{{ activity.action }}</b><small>{% if activity.user %}{{ activity.user.username }} · {% endif %}{{ activity.details }} · {{ activity.created_at }}</small></span>
+        </div>
+      {% empty %}
+        <p class="empty">No activity has been recorded.</p>
+      {% endfor %}
+    </section>
+  </div>
+</main>
+{% endblock %}

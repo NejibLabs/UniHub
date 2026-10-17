@@ -1,0 +1,12 @@
+.search-body{background:#f7f6ff url("../img/Dreamy Lavender University Campus.png") center center/cover fixed no-repeat}
+.search-body .site-content{min-height:100vh;background:linear-gradient(115deg,#f8f8fff0,#f8f8ffb8)}
+.search-page{min-height:100vh;padding-top:126px;padding-bottom:75px}
+.search-page>.description{max-width:640px}
+.search-page>.empty{width:min(680px,100%);margin-top:22px;padding:22px;border:1px solid #e7e8f0;border-radius:15px;background:#ffffffdf}
+.search-page>.filter-bar{width:min(820px,100%);padding:10px;border:1px solid #e6e7ef;border-radius:15px;background:#ffffffed;box-shadow:0 10px 28px #1f2c4d0c}
+.search-page .app-columns .panel{background:#fffffff2}
+@media(max-width:700px){
+  .search-body{background-attachment:scroll}
+  .search-page{padding-top:112px;padding-bottom:45px}
+  .search-page>.filter-bar{align-items:stretch}
+}

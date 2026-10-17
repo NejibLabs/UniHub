@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Contact UniHub — UniHub{% endblock %}
+{% block body_class %}contact-body{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/contact.css' %}">{% endblock %}
+{% block content %}
+<main class="app-page container contact-page">
+  <header class="contact-heading">
+    <p class="kicker">WE'RE HERE TO HELP</p>
+    <h1>Contact <em>UniHub.</em></h1>
+    <p class="description">Send feedback, flag a concern, make a complaint, or ask us a question. Your message will be reviewed by the UniHub team.</p>
+  </header>
+  <div class="contact-layout">
+    <section class="contact-form-card" aria-labelledby="contact-form-heading">
+      <div class="contact-card-heading">
+        <span class="contact-icon"><i data-lucide="send" aria-hidden="true"></i></span>
+        <div><h2 id="contact-form-heading">Send us a message</h2><p>Choose a category and tell us the details.</p></div>
+      </div>
+      <form method="post" class="contact-form">
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="form-error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+        <section class="contact-account" aria-label="Your account details">
+          <p class="contact-section-label">SENDING AS</p>
+          <div class="contact-account-grid">
+            <div><small>Name</small><strong>{{ request.user.get_full_name|default:request.user.username }}</strong></div>
+            <div><small>Username</small><strong>@{{ request.user.username }}</strong></div>
+            <div><small>Email</small><strong>{{ request.user.email|default:"No email on account" }}</strong></div>
+          </div>
+          <p class="contact-account-note"><i data-lucide="lock-keyhole" aria-hidden="true"></i>Account details are added automatically and can’t be changed here.</p>
+        </section>
+        <div class="contact-field">
+          <label for="{{ form.category.id_for_label }}">Message category</label>
+          {{ form.category }}
+          {% for error in form.category.errors %}<small class="field-error" role="alert">{{ error }}</small>{% endfor %}
+        </div>
+        <div class="contact-field">
+          <label for="{{ form.message.id_for_label }}">Message details</label>
+          {{ form.message }}
+          {% for error in form.message.errors %}<small class="field-error" role="alert">{{ error }}</small>{% endfor %}
+        </div>
+        <button class="btn btn-primary btn-lg contact-submit" type="submit"><i data-lucide="send" aria-hidden="true"></i>Send message</button>
+      </form>
+    </section>
+    <aside class="contact-side-card">
+      <img class="contact-side-image" src="{% static 'img/Contact message plane.png' %}" alt="Purple glass paper plane representing a message sent to the UniHub team">
+      <span class="contact-side-icon"><i data-lucide="messages-square" aria-hidden="true"></i></span>
+      <p class="kicker">A DIRECT LINE TO THE TEAM</p>
+      <h2>Your voice helps UniHub improve.</h2>
+      <p>Messages are saved securely with your account details so the team can understand the context and follow up if needed.</p>
+      <ul>
+        <li><i data-lucide="message-square-text" aria-hidden="true"></i>Share an idea or suggestion</li>
+        <li><i data-lucide="flag" aria-hidden="true"></i>Report a problem or concern</li>
+        <li><i data-lucide="circle-help" aria-hidden="true"></i>Ask a question about the platform</li>
+      </ul>
+    </aside>
+  </div>
+</main>
+{% endblock %}

@@ -1,0 +1,26 @@
+.campus-body{
+  min-width:320px;
+  background:#faf9f7 url("../images/unihub-campus-background.png") center center/cover fixed no-repeat;
+}
+.campus-body.student-hub-body{
+  background-image:url("../images/Better Learning Together_ Pastel Education Workspace.png");
+}
+.campus-body .app-page,
+.campus-body .page-shell{
+  background:transparent;
+}
+.campus-body .panel,
+.campus-body .app-stats article,
+.campus-body .subject-card,
+.campus-body .form-card{
+  background:rgba(255,255,255,.93);
+  box-shadow:0 12px 36px rgba(23,35,67,.09);
+  backdrop-filter:blur(8px);
+}
+.campus-body .footer{
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(10px);
+}
+@media(max-width:700px){
+  .campus-body{background-attachment:scroll;background-position:center;background-size:cover}
+}

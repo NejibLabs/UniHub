@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Login — UniHub{% endblock %}
+{% block body_class %}auth-body{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/auth.css' %}">{% endblock %}
+{% block content %}
+<main class="auth-page">
+  <div class="auth-card">
+    <section class="auth-form-panel" aria-labelledby="auth-heading">
+      <a class="auth-brand" href="{% url 'home' %}"><span class="auth-brand-mark" aria-label="UniHub logo"></span><span>UniHub</span></a>
+      <p class="auth-eyebrow">WELCOME BACK</p>
+      <h1 id="auth-heading">Login to <em>UniHub.</em></h1>
+      <p class="auth-intro">Pick up where you left off in your academic journey.</p>
+      {% if error %}<div class="form-error auth-error" role="alert">{{ error }}</div>{% endif %}
+      <form class="auth-form" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        <div class="auth-field">
+          <label for="login-username">Username</label>
+          <div class="auth-input-wrap"><i data-lucide="user-round"></i><input id="login-username" name="username" autocomplete="username" required value="{{ request.POST.username|default:'' }}"></div>
+        </div>
+        <div class="auth-field">
+          <label for="login-password">Password</label>
+          <div class="auth-input-wrap"><i data-lucide="lock-keyhole"></i><input id="login-password" name="password" type="password" autocomplete="current-password" required><button class="password-toggle" type="button" data-password-toggle="login-password" aria-label="Show password" aria-pressed="false"><i data-lucide="eye"></i></button></div>
+        </div>
+        <button class="btn btn-primary btn-lg auth-submit" type="submit">Login <i data-lucide="arrow-right"></i></button>
+      </form>
+      <div class="auth-divider"><span>OR</span></div>
+      <p class="auth-switch">New to UniHub? <a href="{% url 'register' %}">Create an account</a></p>
+    </section>
+
+    <aside class="auth-welcome-panel">
+      <p class="auth-eyebrow">JOIN UNIHUB</p>
+      <h2>Create your account and <em>get started.</em></h2>
+      <p class="auth-welcome-copy">Bring your subjects, study resources, and academic tasks together in one calm, connected space.</p>
+      <div class="auth-benefits">
+        <article><span><i data-lucide="book-open"></i></span><div><h3>Access your subjects</h3><p>Keep your current courses close and easy to explore.</p></div></article>
+        <article><span><i data-lucide="list-checks"></i></span><div><h3>Manage your tasks</h3><p>Stay on top of assignments and important deadlines.</p></div></article>
+        <article><span><i data-lucide="users-round"></i></span><div><h3>Connect with classmates</h3><p>Build a more collaborative student community.</p></div></article>
+        <article><span><i data-lucide="folder-open"></i></span><div><h3>Explore resources</h3><p>Find and share useful materials for your studies.</p></div></article>
+      </div>
+      <a class="btn auth-register-link" href="{% url 'register' %}">Create your account <i data-lucide="arrow-up-right"></i></a>
+    </aside>
+  </div>
+</main>
+{% endblock %}

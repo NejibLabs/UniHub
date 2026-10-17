@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Your profile — UniHub{% endblock %}
+{% block body_class %}profile-body{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/profile.css' %}">{% endblock %}
+{% block content %}
+<main class="profile-layout container">
+  <aside class="profile-sidebar" aria-label="Student navigation">
+    <div class="profile-space-card">
+      <p class="profile-side-label">STUDENT SPACE</p>
+      <nav class="profile-side-nav">
+        <a class="active" href="{% url 'profile' %}" aria-current="page"><i data-lucide="user-round"></i><span>Profile</span></a>
+        <a href="{% url 'subject_list' %}"><i data-lucide="book-open"></i><span>My Subjects</span></a>
+        <a href="{% url 'dashboard' %}#tasks"><i data-lucide="list-checks"></i><span>My Tasks</span></a>
+        <a href="{% url 'search' %}"><i data-lucide="folder-open"></i><span>Resources</span></a>
+      </nav>
+    </div>
+    <section class="profile-summary-card academic-details-card">
+      <div class="summary-card-heading"><span class="summary-icon"><i data-lucide="school"></i></span><div><h2>Academic details</h2><p>Your current learning path.</p></div></div>
+      {% if profile_obj.specialty %}
+        <div class="academic-detail-row"><i data-lucide="building-2"></i><span><small>Faculty</small><strong>{{ profile_obj.specialty.faculty.name }}</strong></span></div>
+        <div class="academic-detail-row"><i data-lucide="book-open-check"></i><span><small>Specialty</small><strong>{{ profile_obj.specialty.name }}</strong></span></div>
+        <div class="academic-detail-row"><i data-lucide="calendar-days"></i><span><small>Semester & year</small><strong>{{ profile_obj.get_semester_display }} · Year {{ profile_obj.current_year }}</strong></span></div>
+      {% else %}
+        <p class="profile-academic-empty">Add your specialty to see your academic details here.</p>
+      {% endif %}
+      <a class="text-link profile-academic-edit" href="{% url 'student_form' %}">Manage academic profile <i data-lucide="arrow-up-right"></i></a>
+    </section>
+  </aside>
+
+  <section class="profile-main">
+    <header class="profile-hero-card">
+      <div class="profile-avatar-controls">
+        <div class="profile-avatar">
+          {% if profile_obj.avatar %}
+            <img src="{{ profile_obj.avatar.url }}" alt="{{ request.user.username }}'s profile photo" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+          {% elif profile_obj.avatar_url %}
+            <img src="{{ profile_obj.avatar_url }}" alt="{{ request.user.username }}'s profile photo" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+          {% endif %}
+          <span class="avatar-fallback"{% if profile_obj.avatar or profile_obj.avatar_url %} hidden{% endif %}>{{ profile_initials }}</span>
+        </div>
+        <a class="profile-avatar-edit" href="{% url 'student_form' %}">Edit</a>
+      </div>
+      <div class="profile-hero-copy">
+        <p class="kicker">YOUR ACCOUNT</p>
+        <h1>Your <em>profile.</em></h1>
+        <p class="profile-identity"><strong>{{ request.user.get_full_name|default:request.user.username }}</strong><span>@{{ request.user.username }}</span></p>
+        <div class="profile-tags">
+          <span><i data-lucide="shield-check"></i>{{ profile_obj.get_role_display }}</span>
+          <span><i data-lucide="calendar-days"></i>{{ profile_obj.get_semester_display }}</span>
+          <span><i data-lucide="graduation-cap"></i>Year {{ profile_obj.current_year }}</span>
+        </div>
+        {% if profile_obj.specialty %}<p class="profile-academic-line">{{ profile_obj.specialty.name }} · {{ profile_obj.specialty.faculty.name }}</p>{% else %}<p class="profile-academic-line">Academic specialty not set</p>{% endif %}
+      </div>
+      <form class="profile-logout profile-hero-logout" method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button class="btn btn-outline btn-sm" type="submit">Log out</button>
+      </form>
+    </header>
+
+    <form class="profile-edit-card" method="post">
+      {% csrf_token %}
+      {% if form.non_field_errors %}<div class="form-error">{{ form.non_field_errors }}</div>{% endif %}
+      <div class="profile-section-heading">
+        <div><p class="kicker">PROFILE DETAILS</p><h2>Edit your information</h2></div>
+        <span class="profile-lock"><i data-lucide="lock-keyhole"></i>Private to your account</span>
+      </div>
+      <section class="profile-form-section" id="personal-information">
+        <div class="profile-form-heading"><span class="profile-section-icon"><i data-lucide="contact-round"></i></span><div><h3>Personal information</h3><p>Tell your community a little about yourself.</p></div></div>
+        <div class="profile-form-grid">
+          <div class="profile-field profile-field-wide">
+            <label for="{{ form.bio.id_for_label }}">{{ form.bio.label }}</label>
+            {{ form.bio }}
+            {% for error in form.bio.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+          </div>
+          <div class="profile-field">
+            <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+            {{ form.first_name }}
+            {% for error in form.first_name.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+          </div>
+          <div class="profile-field">
+            <label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
+            {{ form.last_name }}
+            {% for error in form.last_name.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+          </div>
+          <div class="profile-field profile-field-wide">
+            <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+            {{ form.email }}
+            {% for error in form.email.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+          </div>
+        </div>
+      </section>
+
+      <section class="profile-form-section profile-academic-section">
+        <div class="profile-form-heading"><span class="profile-section-icon"><i data-lucide="library-big"></i></span><div><h3>Academic information</h3><p>Your study details are managed in the academic profile.</p></div></div>
+        {% if profile_obj.specialty %}
+          <div class="academic-summary">
+            <div><small>Faculty</small><strong>{{ profile_obj.specialty.faculty.name }}</strong></div>
+            <div><small>Specialty</small><strong>{{ profile_obj.specialty.name }}</strong></div>
+            <div><small>Current semester</small><strong>{{ profile_obj.get_semester_display }}</strong></div>
+            <div><small>Academic year</small><strong>Year {{ profile_obj.current_year }}</strong></div>
+          </div>
+        {% else %}
+          <p class="profile-academic-empty">No academic specialty has been selected yet.</p>
+        {% endif %}
+      </section>
+
+      <div class="profile-form-actions">
+        <p>Your changes are saved to your UniHub account.</p>
+        <button class="btn btn-primary btn-lg" type="submit"><i data-lucide="save"></i>Save changes</button>
+      </div>
+    </form>
+  </section>
+
+  <aside class="profile-summary">
+    <section class="profile-summary-card completion-card">
+      <div class="summary-card-heading"><span class="summary-icon"><i data-lucide="chart-no-axes-column-increasing"></i></span><div><h2>Profile strength</h2><p>A little more makes a big difference.</p></div></div>
+      <div class="completion-value"><strong>{{ completion_percentage }}%</strong><span>complete</span></div>
+      <div class="completion-track" role="progressbar" aria-label="Profile completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ completion_percentage }}"><span style="width:{{ completion_percentage }}%"></span></div>
+      <ul class="completion-list">
+        {% for item in completion_items %}
+          <li class="{% if item.complete %}is-complete{% endif %}"><i data-lucide="{% if item.complete %}circle-check{% else %}circle{% endif %}"></i>{{ item.label }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <section class="profile-summary-card">
+      <div class="summary-card-heading"><span class="summary-icon"><i data-lucide="activity"></i></span><div><h2>Your activity</h2><p>Numbers from your UniHub account.</p></div></div>
+      <div class="profile-stat-list">
+        <a href="{% url 'subject_list' %}"><span class="profile-stat-icon"><i data-lucide="book-open"></i></span><span><strong>{{ profile_subject_count }}</strong><small>Current subjects</small></span><i class="profile-stat-arrow" data-lucide="chevron-right"></i></a>
+        <a href="{% url 'dashboard' %}#tasks"><span class="profile-stat-icon"><i data-lucide="list-checks"></i></span><span><strong>{{ profile_task_count }}</strong><small>Your tasks</small></span><i class="profile-stat-arrow" data-lucide="chevron-right"></i></a>
+        <a href="{% url 'search' %}"><span class="profile-stat-icon"><i data-lucide="files"></i></span><span><strong>{{ profile_resource_count }}</strong><small>Shared resources</small></span><i class="profile-stat-arrow" data-lucide="chevron-right"></i></a>
+        <div><span class="profile-stat-icon"><i data-lucide="users-round"></i></span><span><strong>{{ profile_follower_count }}</strong><small>Followers</small></span></div>
+      </div>
+    </section>
+
+  </aside>
+</main>
+{% endblock %}

@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}News & announcements — UniHub{% endblock %}
+{% block body_class %}news-body{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/news.css' %}?v=4">{% endblock %}
+{% block extra_js %}<script defer src="{% static 'js/news.js' %}"></script>{% endblock %}
+{% block content %}
+<main class="news-page container">
+  <div class="news-layout">
+    <aside class="news-sidebar news-sidebar-left" aria-label="News navigation">
+      <section class="news-card news-filter-card">
+        <p class="kicker">UNIHUB COMMUNITY</p>
+        <h1>Faculty news</h1>
+        <p class="news-sidebar-copy">Updates and announcements from across your university.</p>
+        <form method="get" class="faculty-filter">
+          <label for="faculty-filter">Show announcements for</label>
+          <select id="faculty-filter" name="faculty">
+            <option value="" {% if not selected_faculty %}selected{% endif %}>All faculties</option>
+            {% for faculty in faculties %}
+              <option value="{{ faculty.id }}" {% if selected_faculty and selected_faculty.id == faculty.id %}selected{% endif %}>{{ faculty.name }}</option>
+            {% endfor %}
+          </select>
+          <button class="news-filter-submit" type="submit">Apply filter</button>
+        </form>
+      </section>
+
+      <nav class="news-card news-shortcuts" aria-label="UniHub shortcuts">
+        <a class="news-shortcut active" href="{% url 'news_feed' %}" aria-current="page">
+          <i data-lucide="newspaper" aria-hidden="true"></i><span>News Feed</span>
+        </a>
+        <a class="news-shortcut" href="{% url 'subject_list' %}">
+          <i data-lucide="book-open" aria-hidden="true"></i><span>Subjects</span>
+        </a>
+        <a class="news-shortcut" href="{% url 'search' %}">
+          <i data-lucide="folder-open" aria-hidden="true"></i><span>Resources</span>
+        </a>
+        <a class="news-shortcut" href="{% url 'profile' %}">
+          <i data-lucide="user-round" aria-hidden="true"></i><span>Profile</span>
+        </a>
+      </nav>
+    </aside>
+
+    <section class="news-feed-column" aria-label="Faculty announcements">
+      <section class="news-card news-composer{% if form.errors %} composer-expanded{% endif %}" id="news-composer" data-expanded="{% if form.errors %}true{% else %}false{% endif %}">
+        <div class="composer-top">
+          <span class="news-avatar composer-avatar" aria-hidden="true">
+            {% if request.user.profile.avatar %}<img src="{{ request.user.profile.avatar.url }}" alt="">{% elif request.user.profile.avatar_url %}<img src="{{ request.user.profile.avatar_url }}" alt="">{% endif %}
+            <span>{{ request.user.get_full_name|default:request.user.username|slice:":2"|upper }}</span>
+          </span>
+          <div class="composer-intro">
+            <strong>Share with your faculty</strong>
+            <small>{{ request.user.get_full_name|default:request.user.username }}</small>
+          </div>
+        </div>
+        <button class="composer-prompt" type="button" data-composer-open aria-controls="composer-fields" aria-expanded="{% if form.errors %}true{% else %}false{% endif %}">
+          What's happening at your faculty?
+        </button>
+        <div class="composer-quick-actions" aria-label="Post options">
+          <button type="button" data-composer-open data-focus="id_image" aria-controls="composer-fields" aria-expanded="{% if form.errors %}true{% else %}false{% endif %}"><i data-lucide="image" aria-hidden="true"></i>Photo</button>
+          <button type="button" data-composer-open data-focus="id_content" aria-controls="composer-fields" aria-expanded="{% if form.errors %}true{% else %}false{% endif %}"><i data-lucide="megaphone" aria-hidden="true"></i>Announcement</button>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="post-form" id="composer-fields" {% if not form.errors %}hidden{% endif %}>
+          {% csrf_token %}
+          {% if form.non_field_errors %}<div class="news-form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+          <div class="field-group">
+            <label for="{{ form.faculty.id_for_label }}">Faculty</label>
+            {{ form.faculty }}
+            {% for error in form.faculty.errors %}<small class="news-field-error">{{ error }}</small>{% endfor %}
+          </div>
+          <div class="field-group">
+            <label for="{{ form.content.id_for_label }}">Announcement</label>
+            {{ form.content }}
+            {% for error in form.content.errors %}<small class="news-field-error">{{ error }}</small>{% endfor %}
+          </div>
+          <div class="composer-media-fields">
+            <div class="field-group">
+              <label for="{{ form.image.id_for_label }}">Photo (optional)</label>
+              {{ form.image }}
+              {% for error in form.image.errors %}<small class="news-field-error">{{ error }}</small>{% endfor %}
+            </div>
+            <div class="field-group">
+              <label for="{{ form.link_url.id_for_label }}">Link URL (optional)</label>
+              {{ form.link_url }}
+              {% for error in form.link_url.errors %}<small class="news-field-error">{{ error }}</small>{% endfor %}
+            </div>
+          </div>
+          <div class="composer-submit-row">
+            <button class="news-publish-button" type="submit"><i data-lucide="send" aria-hidden="true"></i>Publish post</button>
+          </div>
+        </form>
+      </section>
+
+      {% for post in posts %}
+        <article class="news-card news-post">
+          <header class="post-header">
+            <span class="news-avatar post-avatar" aria-hidden="true">
+              {% if post.author.profile.avatar %}<img src="{{ post.author.profile.avatar.url }}" alt="">{% elif post.author.profile.avatar_url %}<img src="{{ post.author.profile.avatar_url }}" alt="">{% endif %}
+              <span>{{ post.author.get_full_name|default:post.author.username|slice:":2"|upper }}</span>
+            </span>
+            <div class="post-author">
+              <div class="post-author-name">
+                <strong>{{ post.author.get_full_name|default:post.author.username }}</strong>
+                {% if post.author.profile.role == "professor" or post.author.profile.role == "representative" %}
+                  <span class="news-role-badge">{{ post.author.profile.get_role_display }}</span>
+                {% endif %}
+              </div>
+              <span class="post-faculty">{{ post.faculty.name }}</span>
+              <time datetime="{{ post.created_at|date:'c' }}" title="{{ post.created_at|date:'l, j F Y, H:i' }}">{{ post.created_at|timesince }} ago</time>
+            </div>
+          </header>
+          <div class="post-content">{{ post.content|linebreaksbr }}</div>
+          {% if post.link_url %}
+            <a class="post-link" href="{{ post.link_url }}" target="_blank" rel="noopener noreferrer">
+              <i data-lucide="link-2" aria-hidden="true"></i><span>Link</span>
+            </a>
+          {% endif %}
+          {% if post.display_image %}
+            <img class="post-image" src="{{ post.display_image }}" alt="Image shared by {{ post.author.get_full_name|default:post.author.username }}" loading="lazy">
+          {% endif %}
+        </article>
+      {% empty %}
+        <div class="news-card news-empty-state">
+          <span class="news-empty-icon"><i data-lucide="messages-square" aria-hidden="true"></i></span>
+          <h2>No announcements yet</h2>
+          <p>No announcements have been shared{% if selected_faculty %} for {{ selected_faculty.name }}{% else %} across the selected faculties{% endif %}. Check back later for university updates.</p>
+        </div>
+      {% endfor %}
+    </section>
+
+    <aside class="news-sidebar news-sidebar-right" aria-label="About UniHub News">
+      <section class="news-card news-about-card">
+        <p class="kicker">YOUR CAMPUS, CONNECTED</p>
+        <h2>About UniHub News</h2>
+        <p>Follow announcements from your faculty and keep up with the updates shared by your university community.</p>
+        <p>Use the faculty filter to focus your feed, or choose all faculties to explore every announcement.</p>
+        <p><strong>UniHub News is for student life: posts must not be about political, religious, or personal matters.</strong></p>
+      </section>
+    </aside>
+  </div>
+</main>
+{% endblock %}

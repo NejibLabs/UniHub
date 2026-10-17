@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Academic profile — UniHub{% endblock %}
+{% block body_class %}student-setup-body{% endblock %}
+{% block extra_css %}
+<style>
+  .student-setup-body{background:#f7f6ff url("{% static 'img/Dreamy Pastel Campus Haze a.png' %}") center center/cover fixed no-repeat}
+  .student-setup-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.9fr);width:min(980px,100%);padding:0;overflow:hidden}
+  .student-setup-form{padding:38px;min-width:0}
+  .student-setup-visual{display:grid;place-items:center;min-width:0;min-height:100%;overflow:hidden;background:linear-gradient(145deg,#f7f5ffdb,#e9e6ffb8 55%,#f5f3ffcf),url("{% static 'img/student-setup-pastel-campus.png' %}") center/cover no-repeat}
+  .student-setup-visual img{display:block;width:min(70%,280px);height:auto;object-fit:contain}
+  .student-setup-form form{margin-top:22px}
+  .student-setup-field{display:grid;gap:5px}
+  .student-setup-avatar{justify-items:center}
+  .student-setup-avatar-preview{display:grid;place-items:center;width:88px;height:88px;overflow:hidden;border-radius:50%;background:linear-gradient(135deg,#dedaff,#a99cf5);color:#fff;font-size:27px;font-weight:800;letter-spacing:.04em}
+  .student-setup-avatar-preview img{width:100%;height:100%;object-fit:cover}
+  .student-setup-avatar-input{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;clip-path:inset(50%)}
+  .student-setup-avatar-change{min-height:34px;padding:0 14px;border:1px solid #5845f57a;border-radius:999px;background:#fff;color:#5845f5;font-size:12px;font-weight:700;cursor:pointer}
+  .student-setup-avatar-change:hover{background:#f1eeff}
+  .student-setup-avatar-change:focus-visible{outline:2px solid #5845f5;outline-offset:3px}
+  @media(max-width:700px){.student-setup-body{background-attachment:scroll}}
+  @media(max-width:760px){.student-setup-card{grid-template-columns:minmax(0,1fr);width:min(560px,100%)}.student-setup-visual{grid-row:1;min-height:220px}.student-setup-visual img{height:250px}.student-setup-form{padding:28px 24px}}
+  @media(max-width:480px){.student-setup-visual{min-height:180px}.student-setup-visual img{height:200px}.student-setup-form{padding:24px 19px}}
+</style>
+{% endblock %}
+{% block content %}
+<main class="page-shell">
+  <section class="form-card student-setup-card">
+    <div class="student-setup-form">
+      <p class="kicker">A QUICK SETUP</p>
+      <h1>Your academic <em>profile.</em></h1>
+      <p class="description">Choose your faculty, specialty, and year, then add a profile picture if you like.</p>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% with avatar=form.avatar %}
+          <div class="student-setup-field student-setup-avatar">
+            <div class="student-setup-avatar-preview" id="studentAvatarPreview">
+              {% if form.instance.avatar %}
+                <img src="{{ form.instance.avatar.url }}" alt="Current profile picture">
+              {% else %}
+                <span aria-label="Profile initials">{{ avatar_initials }}</span>
+              {% endif %}
+            </div>
+            {{ avatar }}
+            <button class="student-setup-avatar-change" type="button" aria-controls="{{ avatar.id_for_label }}">Change</button>
+            {% for error in avatar.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+          </div>
+        {% endwith %}
+        {% for field in form %}
+          {% if field.name != "avatar" %}
+            <div class="student-setup-field">
+              <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}<span aria-hidden="true"> *</span>{% endif %}</label>
+              {{ field }}
+              {% for error in field.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+            </div>
+          {% endif %}
+        {% endfor %}
+        <button class="btn btn-primary btn-lg form-submit" type="submit">Save profile</button>
+      </form>
+    </div>
+    <aside class="student-setup-visual" aria-label="UniHub academic dashboard illustration">
+      <img src="{% static 'img/Logo éducatif U Shadow.png' %}" alt="UniHub academic dashboard displayed on a laptop with study materials">
+    </aside>
+  </section>
+</main>
+<script>
+(() => {
+  const avatarInput = document.getElementById("id_avatar");
+  const avatarButton = document.querySelector(".student-setup-avatar-change");
+  const avatarPreview = document.getElementById("studentAvatarPreview");
+  if (avatarInput && avatarButton && avatarPreview) {
+    avatarButton.addEventListener("click", () => avatarInput.click());
+    avatarInput.addEventListener("change", () => {
+      const file = avatarInput.files && avatarInput.files[0];
+      if (!file) return;
+      const image = document.createElement("img");
+      image.alt = "Selected profile picture";
+      image.src = URL.createObjectURL(file);
+      avatarPreview.replaceChildren(image);
+    });
+  }
+  const faculty = document.getElementById("id_faculty");
+  const specialty = document.getElementById("id_specialty");
+  const year = document.getElementById("id_current_year");
+  if (!faculty || !specialty || !year) return;
+  const specialtiesByFaculty = JSON.parse(faculty.dataset.specialties || "{}");
+  const yearCounts = JSON.parse(specialty.dataset.yearCounts || "{}");
+  const updateYears = () => {
+    const count = Number(yearCounts[specialty.value] || 0);
+    year.disabled = !specialty.value;
+    for (const option of year.options) {
+      if (option.value) option.hidden = !specialty.value || Number(option.value) > count;
+    }
+    if (Number(year.value) > count) year.value = "";
+  };
+  const updateSpecialties = (selectedValue = "") => {
+    const options = specialtiesByFaculty[faculty.value] || [];
+    specialty.replaceChildren(new Option("Choose a specialty", ""));
+    for (const option of options) specialty.add(new Option(option.name, option.id));
+    specialty.disabled = !faculty.value;
+    if (options.some(option => String(option.id) === selectedValue)) specialty.value = selectedValue;
+    updateYears();
+  };
+  faculty.addEventListener("change", () => updateSpecialties());
+  specialty.addEventListener("change", updateYears);
+  updateSpecialties(specialty.value);
+})();
+</script>
+{% endblock %}

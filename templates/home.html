@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load static %}
+{% load static %}
+{% block title %}UniHub — Learn. Connect. Achieve More.{% endblock %}
+{% block content %}
+<main>
+  <section class="hero" id="home">
+    <div class="hero-image">
+      <video class="hero-video" autoplay loop muted playsinline preload="metadata" poster="{% static 'img/Tunisian University Beneath the Sun.png' %}" aria-hidden="true" tabindex="-1">
+        <source src="{% static 'img/tunisian_flag_waving_loop_h264.mp4' %}" type="video/mp4">
+      </video>
+    </div>
+    <div class="hero-shade"></div>
+    <div class="container hero-inner">
+      <div class="hero-copy">
+        <div class="eyebrow"><span></span>The modern student-first platform</div>
+        <h1>Learn smarter,<br>collaborate effortlessly<br>with <em>UniHub.</em></h1>
+        <p class="hero-description">Your all-in-one academic platform to access courses, share resources, manage tasks and connect with your university community.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary btn-lg" href="{% url 'subject_list' %}">Explore Subjects <i data-lucide="arrow-right"></i></a>
+          <a class="btn btn-light btn-lg" href="{% url 'about' %}"><i data-lucide="circle-play"></i> Discover UniHub</a>
+        </div>
+        <div class="stats-panel">
+          <div class="stat"><i class="purple" data-lucide="users-round"></i><div><b>{{ student_count }}</b><small>Students</small></div></div>
+          <div class="stat"><i class="blue" data-lucide="book-open"></i><div><b>{{ subject_count }}</b><small>Subjects available</small></div></div>
+          <div class="stat"><i class="green" data-lucide="check-circle"></i><div><b>{{ resource_count }}</b><small>Verified resources</small></div></div>
+          <div class="stat"><i class="orange" data-lucide="zap"></i><div><b>Anytime</b><small>Access</small></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="overview overview-showcase section" id="features">
+    <div class="container overview-grid">
+      <div class="showcase-editorial">
+        <p class="showcase-eyebrow"><span></span>YOUR ACADEMIC WORKSPACE</p>
+        <h2>Your entire university life, <em>beautifully organized.</em></h2>
+        <p class="showcase-description">From course materials and verified resources to assignments and academic connections, UniHub brings everything you need to stay ahead of your semester into one organized space.</p>
+        <div class="showcase-features">
+          <article class="showcase-feature">
+            <span class="showcase-feature-icon"><i data-lucide="book-open-check"></i></span>
+            <span><b>Course Management</b><small>Keep every subject close.</small></span>
+          </article>
+          <article class="showcase-feature">
+            <span class="showcase-feature-icon"><i data-lucide="files"></i></span>
+            <span><b>Resource Sharing</b><small>Useful notes, shared simply.</small></span>
+          </article>
+          <article class="showcase-feature">
+            <span class="showcase-feature-icon"><i data-lucide="list-checks"></i></span>
+            <span><b>Task Tracking</b><small>Stay ahead of deadlines.</small></span>
+          </article>
+          <article class="showcase-feature">
+            <span class="showcase-feature-icon"><i data-lucide="chart-no-axes-combined"></i></span>
+            <span><b>Academic Progress</b><small>See your semester clearly.</small></span>
+          </article>
+          <article class="showcase-feature">
+            <span class="showcase-feature-icon"><i data-lucide="users-round"></i></span>
+            <span><b>Connect with Peers</b><small>Learn better together.</small></span>
+          </article>
+          <article class="showcase-feature">
+            <span class="showcase-feature-icon"><i data-lucide="badge-check"></i></span>
+            <span><b>Verified Resources</b><small>Find trusted materials.</small></span>
+          </article>
+        </div>
+      </div>
+
+      <div class="hub-preview-frame">
+        <div class="hub-preview-window" aria-label="UniHub student dashboard preview">
+          <aside class="hub-sidebar">
+            <a class="hub-logo" href="{% url 'home' %}"><span class="hub-logo-mark"></span><span>UniHub</span></a>
+            <small class="hub-nav-caption">STUDENT SPACE</small>
+            <nav class="hub-nav" aria-label="Dashboard preview">
+              <a class="is-active" href="{% url 'dashboard' %}"><i data-lucide="layout-dashboard"></i>Dashboard</a>
+              <a href="{% url 'subject_list' %}"><i data-lucide="book-open"></i>My Subjects</a>
+              <a href="{% url 'search' %}"><i data-lucide="folder-open"></i>Resources</a>
+              <a href="{% url 'dashboard' %}#tasks"><i data-lucide="list-checks"></i>Tasks</a>
+              <a href="{% url 'profile' %}"><i data-lucide="user-round"></i>Profile</a>
+            </nav>
+            <div class="hub-sidebar-foot"><i data-lucide="sparkles"></i><span>One space for your semester.</span></div>
+          </aside>
+
+          <div class="hub-workspace">
+            <header class="hub-topbar">
+              <a class="hub-mobile-brand" href="{% url 'home' %}"><span class="hub-logo-mark"></span>UniHub</a>
+              <div class="hub-search"><i data-lucide="search"></i><span>Search subjects, resources...</span><kbd>⌘ K</kbd></div>
+              <div class="hub-user"><button type="button" aria-label="Notifications"><i data-lucide="bell"></i><span></span></button><b>U</b></div>
+            </header>
+            <div class="hub-dashboard-content">
+              <div class="hub-greeting">
+                <div><small>MONDAY · YOUR CAMPUS</small><h3>Your academic overview</h3><p>A calm start to a focused semester.</p></div>
+                <a href="{% url 'dashboard' %}" class="hub-open-link">Open my hub <i data-lucide="arrow-up-right"></i></a>
+              </div>
+
+              <div class="hub-stat-grid">
+                <article class="hub-stat-card tasks-stat"><span class="hub-stat-icon"><i data-lucide="users-round"></i></span><span class="hub-stat-label">Students</span><b>{{ student_count }}</b><small>In the UniHub community</small></article>
+                <article class="hub-stat-card"><span class="hub-stat-icon"><i data-lucide="building-2"></i></span><span class="hub-stat-label">Faculties</span><b>{{ faculty_count }}</b><small>Across your campus</small></article>
+                <article class="hub-stat-card subjects-stat"><span class="hub-stat-icon"><i data-lucide="book-open"></i></span><span class="hub-stat-label">Subjects</span><b>{{ subject_count }}</b><small>Across your campus</small></article>
+                <article class="hub-stat-card resources-stat"><span class="hub-stat-icon"><i data-lucide="badge-check"></i></span><span class="hub-stat-label">Verified resources</span><b>{{ resource_count }}</b><small>Reviewed for students</small></article>
+              </div>
+
+              <div class="hub-preview-panels">
+                <section class="hub-preview-panel hub-subject-panel">
+                  <div class="hub-panel-heading"><div><small>YOUR LEARNING</small><h4>My subjects</h4></div><a href="{% url 'subject_list' %}" aria-label="Browse subjects"><i data-lucide="arrow-up-right"></i></a></div>
+                  <div class="hub-subject-list">
+                    {% for subject in subjects %}
+                      <a class="hub-subject-row" href="{% url 'subject_vault' subject.id %}">
+                        <span class="hub-subject-mark"><i data-lucide="book-marked"></i></span>
+                        <span class="hub-subject-copy"><b>{{ subject.name }}</b><small>{{ subject.specialty.name }}</small></span>
+                        <span class="hub-year-chip">Year {{ subject.year }}</span>
+                      </a>
+                    {% empty %}
+                      <p class="hub-empty-state">Subjects added to UniHub will appear here.</p>
+                    {% endfor %}
+                  </div>
+                </section>
+
+                <section class="hub-preview-panel hub-task-panel">
+                  <div class="hub-panel-heading"><div><small>STAY ON TRACK</small><h4>Up next</h4></div><a href="{% url 'dashboard' %}#tasks" aria-label="View tasks"><i data-lucide="arrow-up-right"></i></a></div>
+                  <div class="hub-task-list">
+                    {% for task in pending_tasks %}
+                      <div class="hub-task-row">
+                        <span class="hub-task-check"><i data-lucide="check"></i></span>
+                        <span class="hub-task-copy"><b>{{ task.title }}</b><small>{{ task.subject.name }}</small></span>
+                        {% if task.due_date %}<time>{{ task.due_date|date:"M j" }}</time>{% else %}<small class="hub-no-date">To do</small>{% endif %}
+                      </div>
+                    {% empty %}
+                      <p class="hub-empty-state">No pending tasks right now.</p>
+                    {% endfor %}
+                  </div>
+                  <a class="hub-all-tasks" href="{% url 'dashboard' %}#tasks">View all tasks <i data-lucide="arrow-right"></i></a>
+                </section>
+              </div>
+              <div class="hub-preview-foot"><span><i></i> Your academic space, in sync</span><span>UniHub dashboard preview</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="callout">
+    <div class="container callout-inner">
+      <div><p class="kicker">YOUR LEARNING SPACE</p><h2>Everything in one place.</h2><p class="description">Find your subjects, keep useful materials organized, and stay on top of academic tasks.</p></div>
+      <a class="btn btn-primary btn-lg" href="{% url 'register' %}">Get started <i data-lucide="arrow-right"></i></a>
+    </div>
+  </section>
+</main>
+{% endblock %}
