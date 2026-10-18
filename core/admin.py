@@ -14,7 +14,7 @@ class UserProfileAdmin(admin.ModelAdmin):
     list_display=("user","role","semester","specialty","current_year"); list_filter=("role","semester","specialty","current_year"); search_fields=("user__username","user__email")
 @admin.register(Resource)
 class ResourceAdmin(admin.ModelAdmin):
-    list_display=("title","category","subject","submitted_by","is_verified","created_at"); list_filter=("category","is_verified","subject"); search_fields=("title","description")
+    list_display=("title","author","category","subject","submitted_by","is_verified","created_at"); list_filter=("category","is_verified","subject"); search_fields=("title","author","description")
 @admin.register(ToDo)
 class ToDoAdmin(admin.ModelAdmin):
     list_display=("title","subject","created_by","assigned_to","due_date","is_completed"); list_filter=("is_completed","due_date","subject")

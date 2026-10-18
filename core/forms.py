@@ -110,8 +110,12 @@ class ContactMessageForm(forms.ModelForm):
 class ResourceForm(forms.ModelForm):
     class Meta:
         model=Resource
-        fields=("title","category","description","url")
+        fields=("title","author","category","description","url")
         widgets={"description":forms.Textarea(attrs={"rows":3})}
+
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.fields["author"].required=True
 class ToDoForm(forms.ModelForm):
     class Meta:
         model=ToDo

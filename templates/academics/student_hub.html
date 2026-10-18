@@ -158,7 +158,7 @@
                 <span class="resource-mark"><i data-lucide="file-text" aria-hidden="true"></i></span>
                 <span class="resource-row-copy">
                   <strong>{{ resource.title }}</strong>
-                  <small>{{ resource.subject.name }} <span aria-hidden="true">·</span> {{ resource.created_at|date:"M j, Y" }}</small>
+                  <small>{{ resource.subject.name }} <span aria-hidden="true">·</span> Author: {{ resource.author|default:"Not specified" }} <span aria-hidden="true">·</span> {{ resource.created_at|date:"M j, Y" }}</small>
                 </span>
                 {% if resource.is_verified %}<span class="resource-status is-verified">Verified</span>{% else %}<span class="resource-status is-review">In review</span>{% endif %}
                 <i class="resource-arrow" data-lucide="arrow-up-right" aria-hidden="true"></i>

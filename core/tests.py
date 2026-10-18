@@ -795,6 +795,7 @@ class UniHubTests(TestCase):
         reverse("add_resource",args=[self.subject.pk]),
         {
             "title":"Practice exam",
+            "author":"Dr. Ada Lovelace",
             "category":"exam",
             "description":"Past paper",
             "url":"https://example.com/exam",
@@ -802,8 +803,11 @@ class UniHubTests(TestCase):
     )
     self.assertEqual(response.status_code,302)
     resource=Resource.objects.get(title="Practice exam")
+    self.assertEqual(resource.author,"Dr. Ada Lovelace")
     self.assertEqual(resource.category,"exam")
-    self.assertContains(self.client.get(reverse("subject_vault",args=[self.subject.pk])),"Exam")
+    vault_response=self.client.get(reverse("subject_vault",args=[self.subject.pk]))
+    self.assertContains(vault_response,"Exam")
+    self.assertContains(vault_response,"Author: Dr. Ada Lovelace")
  def test_semester_date_ranges(self):
     for day in (date(2026,9,1),date(2026,12,31),date(2027,1,15)):
         with self.subTest(day=day): self.assertEqual(semester_for_date(day),"semester_1")

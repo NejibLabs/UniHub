@@ -91,6 +91,7 @@ class Resource(models.Model):
     ]
     subject=models.ForeignKey(Subject,on_delete=models.CASCADE,related_name="resources")
     title=models.CharField(max_length=200)
+    author=models.CharField(max_length=200,blank=True)
     category=models.CharField(max_length=12,choices=CATEGORY_CHOICES,default="other")
     description=models.TextField(blank=True)
     url=models.URLField()
